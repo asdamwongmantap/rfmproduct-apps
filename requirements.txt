@@ -8,3 +8,4 @@ seaborn
 matplotlib
 # datetime
 # parser
+streamlit-option-menu
