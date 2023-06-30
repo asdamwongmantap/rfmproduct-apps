@@ -1,2 +1,12 @@
 streamlit
 mlxtend
+sklearn_extra
+pandas
+numpy
+sklearn
+sklearn_extra
+seaborn
+matplotlib
+re
+datetime
+parser
