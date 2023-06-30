@@ -1,7 +1,7 @@
 streamlit
 mlxtend
-pandas
-numpy
+# pandas
+# numpy
 scikit-learn
 scikit-learn-extra
 seaborn
