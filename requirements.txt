@@ -2,7 +2,7 @@ streamlit
 mlxtend
 pandas
 numpy
-sklearn
+scikit-learn
 scikit-learn-extra
 seaborn
 matplotlib
