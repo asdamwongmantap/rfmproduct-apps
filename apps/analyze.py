@@ -25,7 +25,7 @@ def app():
         # totalOrder = getTotalOrder(data)
         # data = getMinSupport(data,totalOrder)
         # data = rfm1Item(data)
-        rfm = rfmAll(data)
+        rfm = AgGrid(rfmAll(data))
         st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari 01-Februari-2022 s/d 28-Februari-2023")
         category = st.radio(
             "Informasi Yang Diinginkan",
@@ -46,7 +46,7 @@ def app():
             st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
 
         # st.write(data)
-        return AgGrid(rfm)
+        return rfm
 
 def deleteUnusedColumn(df):
     dfDropCol = df.drop(['Fulfillment Item ID',
