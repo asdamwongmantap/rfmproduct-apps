@@ -25,7 +25,7 @@ def app():
         # totalOrder = getTotalOrder(data)
         # data = getMinSupport(data,totalOrder)
         # data = rfm1Item(data)
-        rfm = AgGrid(rfmAll(data))
+        rfm = rfmAll(data)
         st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari 01-Februari-2022 s/d 28-Februari-2023")
         category = st.radio(
             "Informasi Yang Diinginkan",
