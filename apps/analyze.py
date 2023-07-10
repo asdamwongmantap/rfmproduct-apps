@@ -7,6 +7,7 @@ from decimal import *
 import re
 from datetime import datetime
 from dateutil import parser
+from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
 def app():
     st.write("Untuk Melakukan Analisa Produk, Pengguna Perlu melakukan upload data csv yang didapat dari datawarehouse terlebih dahulu")
@@ -45,7 +46,7 @@ def app():
             st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
 
         # st.write(data)
-        return rfm
+        return AgGrid(rfm)
 
 def deleteUnusedColumn(df):
     dfDropCol = df.drop(['Fulfillment Item ID',
