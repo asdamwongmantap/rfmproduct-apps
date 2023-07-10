@@ -9,7 +9,8 @@ matplotlib
 # datetime
 # parser
 streamlit-option-menu
-GridOptionsBuilder
-AgGrid
-GridUpdateMode
-DataReturnMode
+# GridOptionsBuilder
+# AgGrid
+# GridUpdateMode
+# DataReturnMode
+st_aggrid
