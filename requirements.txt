@@ -14,3 +14,4 @@ streamlit-option-menu
 # GridUpdateMode
 # DataReturnMode
 streamlit-aggrid
+streamlit-awesome-table

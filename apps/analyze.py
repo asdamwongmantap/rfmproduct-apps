@@ -7,7 +7,10 @@ from decimal import *
 import re
 from datetime import datetime
 from dateutil import parser
-from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
+# from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
+# import pandas as pd
+from awesome_table import AwesomeTable
+from awesome_table.columns import (Column, ColumnDType)
 
 def app():
     st.write("Untuk Melakukan Analisa Produk, Pengguna Perlu melakukan upload data csv yang didapat dari datawarehouse terlebih dahulu")
@@ -43,7 +46,15 @@ def app():
             st.write(rfm[rfm['Frequency'] == rfm['Frequency'].max()])
         elif category == 'Produk Yang Banyak Memberikan Keuntungan':
             st.write('Total Produk Yang Banyak Memberikan Keuntungan Sebanyak ',len(rfm[rfm['Monetary'] == rfm['Monetary'].max()]))
-            st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
+            # st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
+            AwesomeTable(rfm[rfm['Monetary'] == rfm['Monetary'].max()], columns=[
+                        Column(name='SKU', label='SKU'),
+                        Column(name='Recency', label='Recency'),
+                        Column(name='Frequency', label='Frequency'),
+                        Column(name='Monetary', label='Monetary'),
+                        Column(name='Tenure', label='Tenure'),
+                        Column(name='Last Order Date', label='Last Order Date'),
+                    ], show_search=True)
 
         # st.write(data)
         return rfm
