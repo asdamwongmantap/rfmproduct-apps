@@ -17,6 +17,4 @@ elif selected == 'Analisa Produk':
     analyze.app()
 elif selected == 'Klaster Produk':
     rfm = analyze.app()
-    if rfm.empty:
-        st.write('Total Order Keseluruhan Sebanyak ',totalOrder)
-    # cluster.app(rfm)
+    cluster.app(rfm)
