@@ -49,6 +49,7 @@ def app(rfm):
         labels = kmeans_scaled.labels_
         
         # st.write('DBI Score Untuk K-Means adalah ',davies_bouldin_score(x_scaledkmeans, labels))
+        st.set_option('deprecation.showPyplotGlobalUse', False)
         fig = plt.figure
         savefig = plt.savefig('kmeans.png')
         sns.scatterplot(x=clusters_scaled['Recency'], y=clusters_scaled['Frequency'], 
@@ -74,6 +75,7 @@ def app(rfm):
         # rfmkmedoid.dtypes
         # rfmkmedoid['Cluster'] = rfmkmedoid['Cluster'].replace(['0','1','2'],['Banyak Terjual','Cukup Terjual','Sedikit Terjual'])
         rfmkmedoid['Cluster'] = kmedoids.labels_
+        st.set_option('deprecation.showPyplotGlobalUse', False)
 
         fig = plt.figure
         savefig = plt.savefig('kmedoids.png')
