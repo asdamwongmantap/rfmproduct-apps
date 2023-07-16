@@ -44,6 +44,7 @@ def app(rfm):
         clusters_scaled = rfmkmeans.copy()
         # clusters_scaled2 = rfmkmeans.copy()
         clusters_scaled['Cluster_Kmeans']=kmeans_scaled.fit_predict(x_scaledkmeans)
+        clusters_scaled['Cluster_Kmeans'] = clusters_scaled['Cluster_Kmeans'].astype(str)
        
         
         labels = kmeans_scaled.labels_
@@ -75,6 +76,7 @@ def app(rfm):
         # rfmkmedoid['Cluster'] = rfmkmedoid['Cluster'].astype(str)
         # rfmkmedoid.dtypes
         rfmkmedoid['Cluster'] = kmedoids.labels_
+        rfmkmedoid['Cluster'] = rfmkmedoid['Cluster'].astype(str)
         rfmkmedoid['Cluster'] = rfmkmedoid['Cluster'].replace(['0','1',],['Sedikit Terjual','Banyak Terjual'])
         st.set_option('deprecation.showPyplotGlobalUse', False)
 
