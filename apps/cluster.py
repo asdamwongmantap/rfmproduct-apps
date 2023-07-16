@@ -38,16 +38,24 @@ def app(rfm):
         x_scaledkmeans = scalerkmeans.fit_transform(rfmkmeans)
 
         
-        kmeans_scaled = KMeans(3)
+        kmeans_scaled = KMeans(4)
         kmeans_scaled.fit(x_scaledkmeans)
         identified_clusters = kmeans_scaled.fit_predict(rfmkmeans)
         clusters_scaled = rfmkmeans.copy()
-        clusters_scaled2 = rfmkmeans.copy()
+        # clusters_scaled2 = rfmkmeans.copy()
         clusters_scaled['Cluster_Kmeans']=kmeans_scaled.fit_predict(x_scaledkmeans)
+       
         
         labels = kmeans_scaled.labels_
         
-        st.write('DBI Score Untuk K-Means adalah ',davies_bouldin_score(x_scaledkmeans, labels))
+        # st.write('DBI Score Untuk K-Means adalah ',davies_bouldin_score(x_scaledkmeans, labels))
+        clusters_scaled['Cluster_Kmeans'] = clusters_scaled['Cluster_Kmeans'].replace(['0','1',],['Cukup Terjual','Sedikit Terjual','Lumayan Terjual','Banyak Terjual'])
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+        fig = plt.figure
+        savefig = plt.savefig('kmeans.png')
+        sns.scatterplot(x=clusters_scaled['Recency'], y=clusters_scaled['Frequency'], 
+                        hue = clusters_scaled['Cluster_Kmeans'], palette="Set2", s = 100, alpha = 0.7)
+        st.pyplot(savefig)
     elif category == 'K-medoids':
         rfmkmedoid.drop('Last Order Date', axis = 1, inplace = True)
         rfmkmedoid.drop('Monetary', axis = 1, inplace = True)
@@ -59,14 +67,16 @@ def app(rfm):
         x_scaled = scaler.fit_transform(rfmkmedoid)
 
         
-        kmedoids = KMedoids(n_clusters=3).fit(x_scaled)
-        rfmkmedoid.insert(0, 'Cluster', kmedoids.labels_)
-        db_index = davies_bouldin_score(rfmkmedoid, kmedoids.labels_)
-        st.write('DBI Score Untuk K-Medoids adalah ',db_index)
-        rfmkmedoid['ClusterInt'] = rfmkmedoid['Cluster']
-        rfmkmedoid['Cluster'] = rfmkmedoid['Cluster'].astype(str)
-        rfmkmedoid.dtypes
-        rfmkmedoid['Cluster'] = rfmkmedoid['Cluster'].replace(['0','1','2'],['Banyak Terjual','Cukup Terjual','Sedikit Terjual'])
+        kmedoids = KMedoids(n_clusters=2).fit(x_scaled)
+        # rfmkmedoid.insert(0, 'Cluster', kmedoids.labels_)
+        # db_index = davies_bouldin_score(rfmkmedoid, kmedoids.labels_)
+        # st.write('DBI Score Untuk K-Medoids adalah ',db_index)
+        # rfmkmedoid['ClusterInt'] = rfmkmedoid['Cluster']
+        # rfmkmedoid['Cluster'] = rfmkmedoid['Cluster'].astype(str)
+        # rfmkmedoid.dtypes
+        rfmkmedoid['Cluster'] = kmedoids.labels_
+        rfmkmedoid['Cluster'] = rfmkmedoid['Cluster'].replace(['0','1',],['Sedikit Terjual','Banyak Terjual'])
+        st.set_option('deprecation.showPyplotGlobalUse', False)
 
         fig = plt.figure
         savefig = plt.savefig('kmedoids.png')
