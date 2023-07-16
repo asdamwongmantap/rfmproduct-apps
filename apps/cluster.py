@@ -42,7 +42,7 @@ def app(rfm):
         kmeans_scaled.fit(x_scaledkmeans)
         identified_clusters = kmeans_scaled.fit_predict(rfmkmeans)
         clusters_scaled = rfmkmeans.copy()
-        clusters_scaled2 = rfmkmeans.copy()
+        # clusters_scaled2 = rfmkmeans.copy()
         clusters_scaled['Cluster_Kmeans']=kmeans_scaled.fit_predict(x_scaledkmeans)
        
         
@@ -50,9 +50,9 @@ def app(rfm):
         
         # st.write('DBI Score Untuk K-Means adalah ',davies_bouldin_score(x_scaledkmeans, labels))
         fig = plt.figure
-        savefig = plt.savefig('kmedoids.png')
-        sns.scatterplot(x=clusters_scaled2['Recency'], y=clusters_scaled2['Frequency'], 
-                        hue = clusters_scaled2['Cluster_Kmeans'], palette="Set2", s = 100, alpha = 0.7)
+        savefig = plt.savefig('kmeans.png')
+        sns.scatterplot(x=clusters_scaled['Recency'], y=clusters_scaled['Frequency'], 
+                        hue = clusters_scaled['Cluster_Kmeans'], palette="Set2", s = 100, alpha = 0.7)
         st.pyplot(savefig)
     elif category == 'K-medoids':
         rfmkmedoid.drop('Last Order Date', axis = 1, inplace = True)
