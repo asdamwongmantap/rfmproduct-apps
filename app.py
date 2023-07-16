@@ -17,5 +17,5 @@ elif selected == 'Analisa Produk':
     analyze.app()
 elif selected == 'Klaster Produk':
     rfm = analyze.app()
-    if len(rfm) > 0:
+    if rfm.empty:
         cluster.app(rfm)
