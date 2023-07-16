@@ -49,7 +49,7 @@ def app(rfm):
         labels = kmeans_scaled.labels_
         
         # st.write('DBI Score Untuk K-Means adalah ',davies_bouldin_score(x_scaledkmeans, labels))
-        clusters_scaled['Cluster_Kmeans'] = clusters_scaled['Cluster_Kmeans'].replace(['0','1',],['Cukup Terjual','Sedikit Terjual','Lumayan Terjual','Banyak Terjual'])
+        clusters_scaled['Cluster_Kmeans'] = clusters_scaled['Cluster_Kmeans'].replace(['0','1','2','3'],['Cukup Terjual','Sedikit Terjual','Lumayan Terjual','Banyak Terjual'])
         st.set_option('deprecation.showPyplotGlobalUse', False)
         fig = plt.figure
         savefig = plt.savefig('kmeans.png')
