@@ -16,5 +16,4 @@ if selected == 'Dashboard':
 elif selected == 'Analisa Produk':
     analyze.app()
 elif selected == 'Klaster Produk':
-    rfm = analyze.app()
-    cluster.app(rfm)
+    cluster.app()
