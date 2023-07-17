@@ -1,0 +1,17 @@
+credentials:
+  usernames:
+    operation:
+      email: operation@catalyst.id
+      name: Operation Analyst
+      password: abc # To be replaced with hashed password
+    finance:
+      email: finance@catalyst.id
+      name: Finance Analyst
+      password: def # To be replaced with hashed password
+cookie:
+  expiry_days: 30
+  key: random_signature_key # Must be string
+  name: random_cookie_name
+preauthorized:
+  emails:
+  - asdamgrimson@gmail.com
