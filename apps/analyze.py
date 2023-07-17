@@ -44,10 +44,10 @@ def app():
             # st.write(rfm[rfm['Recency'] == rfm['Recency'].min()])
             gd = GridOptionsBuilder.from_dataframe(rfm[rfm['Recency'] == rfm['Recency'].min()])
             gd.configure_pagination(enabled=True)
-            gd.configure_side_bar()
+            # gd.configure_side_bar()
             gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True)
             gridOptions = gd.build()
-            AgGrid(rfm[rfm['Monetary'] == rfm['Monetary'].max()], gridOptions=gridOptions)
+            AgGrid(rfm[rfm['Recency'] == rfm['Recency'].min()], gridOptions=gridOptions)
         elif category == 'Produk Yang Banyak Terjual':
             st.write('Total Produk Yang Banyak Terjual Sebanyak ',len(rfm[rfm['Frequency'] == rfm['Frequency'].max()]))
             st.write(rfm[rfm['Frequency'] == rfm['Frequency'].max()])
