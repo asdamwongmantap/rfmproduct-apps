@@ -18,7 +18,7 @@ authenticator = stauth.Authenticate(
 
 name, authentication_status, username = authenticator.login('Login', 'main')
 st.write(authentication_status)
-st.write(username)
+st.write(config['credentials'])
 if authentication_status:
     authenticator.logout('Logout', 'main')
     if username == 'operation':
