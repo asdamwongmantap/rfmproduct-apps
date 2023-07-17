@@ -16,7 +16,7 @@ authenticator = stauth.Authenticate(
     config['preauthorized']
 )
 
-name, authentication_status, username = authenticator.login('Login', 'main')
+name, authentication_status, username = authenticator.login('Login', 'login')
 if authentication_status:
     authenticator.logout('Logout', 'main')
     if username == 'operation':
