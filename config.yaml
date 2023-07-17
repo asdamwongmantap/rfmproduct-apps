@@ -3,7 +3,7 @@ credentials:
     operation:
       email: operation@catalyst.id
       name: Operation Analyst
-      password: $2b$12$4HoU1jk5ne8kJwIzHMerXujM3lljJFglRf7nwb1LCvT4Fvdeg1TAa
+      password: $2a$04$YscOfRYdvdiZ02.1xzN42.zX8dvt5K6kWO/VtBFElBelxIeFOQ7g6
     finance:
       email: finance@catalyst.id
       name: Finance Analyst
