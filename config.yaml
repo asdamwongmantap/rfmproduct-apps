@@ -1,5 +1,5 @@
 credentials:
-  usernames:
+  username:
     operation:
       email: operation@catalyst.id
       name: Operation Analyst
