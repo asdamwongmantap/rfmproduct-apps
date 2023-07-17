@@ -26,10 +26,6 @@ def app():
         # data = getMinSupport(data,totalOrder)
         # data = rfm1Item(data)
         rfm = rfmAll(data)
-        gd = GridOptionsBuilder.from_dataframe(rfm)
-        gd.configure_pagination(enabled=True)
-        gd.configure_default_column(groupable=True)
-        gridOptions = gd.build()
         st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari 01-Februari-2022 s/d 28-Februari-2023")
         category = st.radio(
             "Informasi Yang Diinginkan",
@@ -329,7 +325,8 @@ def rfmAll(data):
     frequency = sku_group["Order ID"].nunique() # how many times the sku made transactions?
     monetary = sku_group["profit"].sum()
     tenure = snapshot - sku_group["dateSplit"].min()  # the first day of grouped customer's transaction is captured with .min()
-    rfm = rfm = pd.DataFrame() # opened a new rfm dataframe
+    rfm = pd.DataFrame() # opened a new rfm dataframe
+    rfm['SKU'] = sku_group['SKU']
     rfm["Recency"] = recency.dt.days # FORMAT CHANGE: timedelta64 to integer
     rfm["Frequency"] = frequency
     rfm["Monetary"] = monetary
