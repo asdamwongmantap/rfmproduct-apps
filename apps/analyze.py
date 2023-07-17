@@ -50,9 +50,10 @@ def app():
             # st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
             gd = GridOptionsBuilder.from_dataframe(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
             gd.configure_pagination(enabled=True)
-            gd.configure_default_column(groupable=True)
+            gd.configure_side_bar()
+            gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True)
             gridOptions = gd.build()
-            st.write(gridOptions)
+            st.write(AgGrid(rfm[rfm['Monetary'] == rfm['Monetary'].max()], gridOptions=gridOptions))
 
         # st.write(data)
         return gridOptions
