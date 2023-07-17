@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 from apps import analyze
 
 def app():
+    st.write("Sebelum memilih metode klaster, pastikan anda telah mengupload file csv yang didapat dari datawarehouse !")
+
     option = st.selectbox(
     'Silahkan Pilih Metode Klaster !',
     ('-', 'K-Medoids', 'K-Means'))
@@ -34,7 +36,9 @@ def productcluster(cluster,rfm):
     rfmkmeans = rfm
     rfmkmedoid = rfm
 
-    numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!')
+    # numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!')
+    numOfCluster = st.slider('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=1, max_value=10, value=5, step=1)
+    numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=1, max_value=10, value=5, step=1)
     if int(numOfCluster) <= 0:
         st.write("Jumlah klaster harus lebih dari 0")
 
