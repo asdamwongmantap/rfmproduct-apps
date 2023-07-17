@@ -20,7 +20,7 @@ with open('config.yaml') as file:
 #     config['preauthorized']
 # )
 authenticator = stauth.Authenticate(names, usernames, hashed_passwords,
-    "sales_dashboard", "abcdef", cookie_expiry_days=30)
+    "sales_dashboard", "abcdef")
 
 name, authentication_status, username = authenticator.login('Login', 'main')
 st.write(authentication_status)
