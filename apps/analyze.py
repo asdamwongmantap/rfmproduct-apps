@@ -331,7 +331,7 @@ def rfmAll(data):
     frequency = sku_group["Order ID"].nunique() # how many times the sku made transactions?
     monetary = sku_group["profit"].sum()
     tenure = snapshot - sku_group["dateSplit"].min()  # the first day of grouped customer's transaction is captured with .min()
-    rfm = rfm = pd.DataFrame() # opened a new rfm dataframe
+    rfm = pd.DataFrame() # opened a new rfm dataframe
     rfm["Recency"] = recency.dt.days # FORMAT CHANGE: timedelta64 to integer
     rfm["Frequency"] = frequency
     rfm["Monetary"] = monetary
