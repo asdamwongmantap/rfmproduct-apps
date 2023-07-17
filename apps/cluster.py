@@ -8,8 +8,22 @@ from sklearn_extra.cluster import KMedoids
 import string
 import seaborn as sns
 import matplotlib.pyplot as plt
+from apps import analyze
 
-def app(rfm):
+def app():
+    option = st.selectbox(
+    'Silahkan Pilih Metode Klaster !',
+    ('-', 'K-Medoids', 'K-Means'))
+
+    if option == 'K-Medoids':
+        rfm = analyze.app()
+        productcluster(option,rfm)
+    elif option == 'K-Means':
+        rfm = analyze.app()
+        productcluster(option,rfm)
+    
+
+def productcluster(cluster,rfm):
     Q1 = rfm['Frequency'].quantile(0.25)
     Q3 = rfm['Frequency'].quantile(0.75)
     IQR = Q3 - Q1
@@ -20,13 +34,7 @@ def app(rfm):
     rfmkmeans = rfm
     rfmkmedoid = rfm
 
-    st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari 01-Februari-2022 s/d 28-Februari-2023")
-    st.write("Silahkan Pilih Algoritma Klaster Yang Ingin Digunakan")
-    category = st.radio(
-        "Klaster",
-        ('K-Means','K-medoids'))
-
-    if category == 'K-Means':
+    if cluster == 'K-Means':
         rfmkmeans.drop('Last Order Date', axis = 1, inplace = True)
         rfmkmeans.drop('Monetary', axis = 1, inplace = True)
         rfmkmeans.drop('Tenure', axis = 1, inplace = True)
@@ -55,7 +63,7 @@ def app(rfm):
         sns.scatterplot(x=clusters_scaled['Recency'], y=clusters_scaled['Frequency'], 
                         hue = clusters_scaled['Cluster_Kmeans'], palette="Set2", s = 100, alpha = 0.7)
         st.pyplot(savefig)
-    elif category == 'K-medoids':
+    elif cluster == 'K-medoids':
         rfmkmedoid.drop('Last Order Date', axis = 1, inplace = True)
         rfmkmedoid.drop('Monetary', axis = 1, inplace = True)
         rfmkmedoid.drop('Tenure', axis = 1, inplace = True)
