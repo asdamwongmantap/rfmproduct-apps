@@ -19,6 +19,7 @@ def app():
         # tampilkan 3 baris pertama
         # st.write(df)
 
+
         data = deleteUnusedColumn(df)
         data = renameColumn(data)
         # data = masking(data)
@@ -26,6 +27,11 @@ def app():
         # data = getMinSupport(data,totalOrder)
         # data = rfm1Item(data)
         rfm = rfmAll(data)
+        gd = GridOptionsBuilder.from_dataframe(rfm)
+        gd.configure_pagination(enabled=True,paginationPageSize=10)
+        # gd.configure_side_bar()
+        gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True,filterable=True)
+        gridOptions = gd.build()
         st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari 01-Februari-2022 s/d 28-Februari-2023")
         category = st.radio(
             "Informasi Yang Diinginkan",
@@ -58,7 +64,7 @@ def app():
             AgGrid(rfm[rfm['Monetary'] == rfm['Monetary'].max()], gridOptions=gridOptions)
 
         # st.write(data)
-        return gridOptions
+        return AgGrid(rfm)
 
 def deleteUnusedColumn(df):
     dfDropCol = df.drop(['Fulfillment Item ID',
