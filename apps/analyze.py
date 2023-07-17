@@ -337,6 +337,6 @@ def rfmAll(data):
     rfm["Monetary"] = monetary
     rfm["Tenure"] = tenure.dt.days # FORMAT CHANGE: timedelta64 to integer
     rfm['Last Order Date'] = sku_group["dateSplit"].max()
-    # rfm.reset_index(inplace=True)
+    rfm.reset_index(inplace=True)
     return rfm
     
