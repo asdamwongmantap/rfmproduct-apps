@@ -43,9 +43,9 @@ def app():
             st.write('Total Produk Yang Belum Lama Terjual Sebanyak ',len(rfm[rfm['Recency'] == rfm['Recency'].min()]))
             # st.write(rfm[rfm['Recency'] == rfm['Recency'].min()])
             gd = GridOptionsBuilder.from_dataframe(rfm[rfm['Recency'] == rfm['Recency'].min()])
-            gd.configure_pagination(enabled=True)
+            gd.configure_pagination(enabled=True,paginationPageSize=10)
             # gd.configure_side_bar()
-            gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True)
+            gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True,filterable=True)
             gridOptions = gd.build()
             AgGrid(rfm[rfm['Recency'] == rfm['Recency'].min()], gridOptions=gridOptions)
         elif category == 'Produk Yang Banyak Terjual':
