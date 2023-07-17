@@ -7,10 +7,7 @@ from decimal import *
 import re
 from datetime import datetime
 from dateutil import parser
-# from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
-# import pandas as pd
-from awesome_table import AwesomeTable
-from awesome_table.columns import (Column, ColumnDType)
+from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
 def app():
     st.write("Untuk Melakukan Analisa Produk, Pengguna Perlu melakukan upload data csv yang didapat dari datawarehouse terlebih dahulu")
@@ -29,6 +26,10 @@ def app():
         # data = getMinSupport(data,totalOrder)
         # data = rfm1Item(data)
         rfm = rfmAll(data)
+        gd = GridOptionsBuilder.from_dataframe(rfm)
+        gd.configure_pagination(enabled=True)
+        gd.configure_default_column(groupable=True)
+        gridOptions = gd.build()
         st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari 01-Februari-2022 s/d 28-Februari-2023")
         category = st.radio(
             "Informasi Yang Diinginkan",
@@ -47,17 +48,14 @@ def app():
         elif category == 'Produk Yang Banyak Memberikan Keuntungan':
             st.write('Total Produk Yang Banyak Memberikan Keuntungan Sebanyak ',len(rfm[rfm['Monetary'] == rfm['Monetary'].max()]))
             # st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
-            AwesomeTable(rfm[rfm['Monetary'] == rfm['Monetary'].max()], columns=[
-                        Column(name='SKU', label='SKU'),
-                        Column(name='Recency', label='Recency'),
-                        Column(name='Frequency', label='Frequency'),
-                        Column(name='Monetary', label='Monetary'),
-                        Column(name='Tenure', label='Tenure'),
-                        Column(name='Last Order Date', label='Last Order Date'),
-                    ], show_search=True)
+            gd = GridOptionsBuilder.from_dataframe(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
+            gd.configure_pagination(enabled=True)
+            gd.configure_default_column(groupable=True)
+            gridOptions = gd.build()
+            st.write(gridOptions)
 
         # st.write(data)
-        return rfm
+        return gridOptions
 
 def deleteUnusedColumn(df):
     dfDropCol = df.drop(['Fulfillment Item ID',
