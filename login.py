@@ -2,7 +2,7 @@ import streamlit as st
 import yaml
 from yaml.loader import SafeLoader
 import streamlit_authenticator as stauth
-import app # import your app modules here
+from apps import menu # import your app modules here
 
 hashed_passwords = stauth.Hasher(['abc', 'def']).generate()
 
@@ -23,7 +23,7 @@ if authentication_status:
     if username == 'operation':
         # st.write(f'Welcome *{name}*')
         # st.title('Application 1')
-        app.main()
+        menu.mainmenu()
     elif username == 'finance':
         st.write(f'Welcome *{name}*')
         st.title('Application 2')
