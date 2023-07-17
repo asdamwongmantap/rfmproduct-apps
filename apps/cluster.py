@@ -34,7 +34,6 @@ def productcluster(cluster,rfm):
     rfmkmeans = rfm
     rfmkmedoid = rfm
 
-    # numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!')
     numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=2, max_value=10, value=2, step=1)
     if int(numOfCluster) <= 0:
         st.write("Jumlah klaster harus lebih dari 0")
@@ -70,7 +69,7 @@ def productcluster(cluster,rfm):
             sns.scatterplot(x=clusters_scaled['Recency'], y=clusters_scaled['Frequency'], 
                             hue = clusters_scaled['Cluster_Kmeans'], palette="Set2", s = 100, alpha = 0.7)
             st.pyplot(savefig)
-    elif cluster == 'K-medoids':
+    elif cluster == 'K-Medoids':
         if int(numOfCluster) != 0:
             rfmkmedoid.drop('Last Order Date', axis = 1, inplace = True)
             rfmkmedoid.drop('Monetary', axis = 1, inplace = True)
