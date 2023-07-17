@@ -3,18 +3,24 @@ import yaml
 from yaml.loader import SafeLoader
 import streamlit_authenticator as stauth
 
+# --- USER AUTHENTICATION ---
+names = ["Operation Analyst", "Finance Analyst"]
+usernames = ["operation", "finance"]
+
 hashed_passwords = stauth.Hasher(['abc', 'def']).generate()
 
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
-authenticator = stauth.Authenticate(
-    config['credentials'],
-    config['cookie']['name'],
-    config['cookie']['key'],
-    config['cookie']['expiry_days'],
-    config['preauthorized']
-)
+# authenticator = stauth.Authenticate(
+#     config['credentials'],
+#     config['cookie']['name'],
+#     config['cookie']['key'],
+#     config['cookie']['expiry_days'],
+#     config['preauthorized']
+# )
+authenticator = stauth.Authenticate(names, usernames, hashed_passwords,
+    "sales_dashboard", "abcdef", cookie_expiry_days=30)
 
 name, authentication_status, username = authenticator.login('Login', 'main')
 st.write(authentication_status)
