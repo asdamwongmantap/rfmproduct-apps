@@ -5,7 +5,7 @@ import streamlit_authenticator as stauth
 
 hashed_passwords = stauth.Hasher(['abc', 'def']).generate()
 
-with open('config.yaml') as file:
+with open('../config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
 authenticator = stauth.Authenticate(
@@ -18,6 +18,7 @@ authenticator = stauth.Authenticate(
 
 name, authentication_status, username = authenticator.login('Login', 'main')
 st.write(authentication_status)
+st.write(username)
 if authentication_status:
     authenticator.logout('Logout', 'main')
     if username == 'operation':
