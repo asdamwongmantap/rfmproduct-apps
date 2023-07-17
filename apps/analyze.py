@@ -332,11 +332,11 @@ def rfmAll(data):
     monetary = sku_group["profit"].sum()
     tenure = snapshot - sku_group["dateSplit"].min()  # the first day of grouped customer's transaction is captured with .min()
     rfm = rfm = pd.DataFrame() # opened a new rfm dataframe
-    rfm['SKU'] = data['SKU']
     rfm["Recency"] = recency.dt.days # FORMAT CHANGE: timedelta64 to integer
     rfm["Frequency"] = frequency
     rfm["Monetary"] = monetary
     rfm["Tenure"] = tenure.dt.days # FORMAT CHANGE: timedelta64 to integer
     rfm['Last Order Date'] = sku_group["dateSplit"].max()
+    rfm.reset_index(inplace=True)
     return rfm
     
