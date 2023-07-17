@@ -3,14 +3,14 @@ credentials:
     operation:
       email: operation@catalyst.id
       name: Operation Analyst
-      password: abc # To be replaced with hashed password
+      password: $2b$12$4HoU1jk5ne8kJwIzHMerXujM3lljJFglRf7nwb1LCvT4Fvdeg1TAa
     finance:
       email: finance@catalyst.id
       name: Finance Analyst
-      password: def # To be replaced with hashed password
+      password: $2b$12$jnFBNelsRN9lYypXB.q02OlAsN7VxOOeEwAGBL7swA7ri80hB2CQK
 cookie:
   expiry_days: 30
-  key: random_signature_key # Must be string
+  key: rfm
   name: random_cookie_name
 preauthorized:
   emails:
