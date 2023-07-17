@@ -10,7 +10,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from apps import analyze
 
-def app():
+def app(rfm):
     st.write("Sebelum memilih metode klaster, pastikan anda telah mengupload file csv yang didapat dari datawarehouse !")
 
     option = st.selectbox(
@@ -18,10 +18,8 @@ def app():
     ('-', 'K-Medoids', 'K-Means'))
 
     if option == 'K-Medoids':
-        rfm = analyze.app()
         productcluster(option,rfm)
     elif option == 'K-Means':
-        rfm = analyze.app()
         productcluster(option,rfm)
     
 
@@ -37,8 +35,7 @@ def productcluster(cluster,rfm):
     rfmkmedoid = rfm
 
     # numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!')
-    numOfCluster = st.slider('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=1, max_value=10, value=5, step=1)
-    numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=1, max_value=10, value=5, step=1)
+    numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=2, max_value=10, value=2, step=1)
     if int(numOfCluster) <= 0:
         st.write("Jumlah klaster harus lebih dari 0")
 
