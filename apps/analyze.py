@@ -41,7 +41,13 @@ def app():
             st.write('Total Order Keseluruhan Sebanyak ',totalOrder)
         elif category == 'Produk Yang Belum Lama Terjual':
             st.write('Total Produk Yang Belum Lama Terjual Sebanyak ',len(rfm[rfm['Recency'] == rfm['Recency'].min()]))
-            st.write(rfm[rfm['Recency'] == rfm['Recency'].min()])
+            # st.write(rfm[rfm['Recency'] == rfm['Recency'].min()])
+            gd = GridOptionsBuilder.from_dataframe(rfm[rfm['Recency'] == rfm['Recency'].min()])
+            gd.configure_pagination(enabled=True)
+            gd.configure_side_bar()
+            gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True)
+            gridOptions = gd.build()
+            AgGrid(rfm[rfm['Monetary'] == rfm['Monetary'].max()], gridOptions=gridOptions)
         elif category == 'Produk Yang Banyak Terjual':
             st.write('Total Produk Yang Banyak Terjual Sebanyak ',len(rfm[rfm['Frequency'] == rfm['Frequency'].max()]))
             st.write(rfm[rfm['Frequency'] == rfm['Frequency'].max()])
@@ -53,7 +59,7 @@ def app():
             gd.configure_side_bar()
             gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True)
             gridOptions = gd.build()
-            st.write(AgGrid(rfm[rfm['Monetary'] == rfm['Monetary'].max()], gridOptions=gridOptions))
+            AgGrid(rfm[rfm['Monetary'] == rfm['Monetary'].max()], gridOptions=gridOptions)
 
         # st.write(data)
         return gridOptions
