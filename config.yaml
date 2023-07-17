@@ -9,9 +9,9 @@ credentials:
       name: Finance Analyst
       password: $2b$12$jnFBNelsRN9lYypXB.q02OlAsN7VxOOeEwAGBL7swA7ri80hB2CQK
 cookie:
-  expiry_days: 30
-  key: rfm
-  name: random_cookie_name
+  expiry_days: 7
+  key: rfmproductapps
+  name: rfmproductapps_cookie_name
 preauthorized:
   emails:
   - asdamgrimson@gmail.com
