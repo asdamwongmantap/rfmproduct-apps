@@ -99,7 +99,7 @@ def productcluster(cluster,rfm):
 
         if int(numOfCluster) != 0:
             kmedoids = KMedoids(n_clusters=int(numOfCluster)).fit(x_scaled)
-            # rfmkmedoid.insert(0, 'Cluster', kmedoids.labels_)
+            rfmkmedoid.insert(0, 'Cluster', kmedoids.labels_)
             # db_index = davies_bouldin_score(rfmkmedoid, kmedoids.labels_)
             # st.write('DBI Score Untuk K-Medoids adalah ',db_index)
             # rfmkmedoid['ClusterInt'] = rfmkmedoid['Cluster']
