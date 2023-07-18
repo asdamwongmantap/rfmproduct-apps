@@ -32,7 +32,7 @@ def app():
         # gd.configure_side_bar()
         gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True,filterable=True)
         gridOptions = gd.build()
-        st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari 01-Februari-2022 s/d 28-Februari-2023")
+        st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari",rfm['First Order Date'] ,"s/d", rfm['First Order Date'])
         category = st.radio(
             "Informasi Yang Diinginkan",
             ('Total Order','Produk Yang Belum Lama Terjual',
@@ -336,8 +336,9 @@ def rfmAll(data):
     rfm["Recency"] = recency.dt.days # FORMAT CHANGE: timedelta64 to integer
     rfm["Frequency"] = frequency
     rfm["Monetary"] = monetary
-    rfm["Tenure"] = tenure.dt.days # FORMAT CHANGE: timedelta64 to integer
+    # rfm["Tenure"] = tenure.dt.days # FORMAT CHANGE: timedelta64 to integer
     rfm['Last Order Date'] = sku_group["dateSplit"].max()
+    rfm['First Order Date'] = sku_group["dateSplit"].min()
     # rfm.reset_index(inplace=True)
     return rfm
     
