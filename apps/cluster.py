@@ -51,7 +51,7 @@ def productcluster(cluster,rfm):
         x_scaledkmeans = scalerkmeans.fit_transform(rfmkmeans)
 
         if isAutoCluster == 'Ya':
-            numOfCluster = clusterbydbikmeans(x_scaledkmeans)[0]['Klaster']
+            numOfCluster = clusterbydbikmeans(x_scaledkmeans)['Klaster']
         else:
             numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=2, max_value=10, value=2, step=1)
             if int(numOfCluster) <= 0:
@@ -90,7 +90,7 @@ def productcluster(cluster,rfm):
         x_scaled = scaler.fit_transform(rfmkmedoid)
 
         # st.warning(clusterbydbikmedoids(x_scaled))
-        if isAutoCluster:
+        if isAutoCluster == 'Ya':
             numOfCluster = clusterbydbikmedoids(x_scaled)['Klaster']
         else:
             numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=2, max_value=10, value=2, step=1)
