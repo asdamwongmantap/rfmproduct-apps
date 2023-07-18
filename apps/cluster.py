@@ -9,6 +9,7 @@ import string
 import seaborn as sns
 import matplotlib.pyplot as plt
 from apps import analyze
+from sklearn.metrics import davies_bouldin_score
 
 def app(rfm):
     st.write("Sebelum memilih metode klaster, pastikan anda telah mengupload file csv yang didapat dari datawarehouse !")
@@ -39,19 +40,24 @@ def productcluster(cluster,rfm):
         st.write("Jumlah klaster harus lebih dari 0")
 
     if cluster == 'K-Means':
+        isAutoCluster = st.radio(
+            "Apakah ingin melakukan penentuan klaster secara otomatis ?",
+            ('Ya','Tidak'))
+       
+        rfmkmeans.drop('Last Order Date', axis = 1, inplace = True)
+        rfmkmeans.drop('Monetary', axis = 1, inplace = True)
+        rfmkmeans.drop('Tenure', axis = 1, inplace = True)
+        rfmkmeans.astype({'Recency':'float64','Frequency':'float64'})
+
         
+        scalerkmeans = StandardScaler()
+        x_scaledkmeans=scalerkmeans.fit(rfmkmeans)
+        x_scaledkmeans = scalerkmeans.fit_transform(rfmkmeans)
+
+        if isAutoCluster:
+            numOfCluster = clusterbydbikmeans(x_scaledkmeans)['Klaster']
+
         if int(numOfCluster) != 0:
-            rfmkmeans.drop('Last Order Date', axis = 1, inplace = True)
-            rfmkmeans.drop('Monetary', axis = 1, inplace = True)
-            rfmkmeans.drop('Tenure', axis = 1, inplace = True)
-            rfmkmeans.astype({'Recency':'float64','Frequency':'float64'})
-
-            
-            scalerkmeans = StandardScaler()
-            x_scaledkmeans=scalerkmeans.fit(rfmkmeans)
-            x_scaledkmeans = scalerkmeans.fit_transform(rfmkmeans)
-
-            
             kmeans_scaled = KMeans(int(numOfCluster))
             kmeans_scaled.fit(x_scaledkmeans)
             identified_clusters = kmeans_scaled.fit_predict(rfmkmeans)
@@ -70,17 +76,23 @@ def productcluster(cluster,rfm):
                             hue = clusters_scaled['Cluster_Kmeans'], palette="Set2", s = 100, alpha = 0.7)
             st.pyplot(savefig)
     elif cluster == 'K-Medoids':
+        isAutoCluster = st.radio(
+            "Apakah ingin melakukan penentuan klaster secara otomatis ?",
+            ('Ya','Tidak'))
+       
+        rfmkmedoid.drop('Last Order Date', axis = 1, inplace = True)
+        rfmkmedoid.drop('Monetary', axis = 1, inplace = True)
+        rfmkmedoid.drop('Tenure', axis = 1, inplace = True)
+        rfmkmedoid.astype({'Recency':'float64','Frequency':'float64'})
+
+        scaler = StandardScaler()
+        x_scaled=scaler.fit(rfmkmedoid)
+        x_scaled = scaler.fit_transform(rfmkmedoid)
+
+        if isAutoCluster:
+            numOfCluster = clusterbydbikmedoids(x_scaled)['Klaster']
+
         if int(numOfCluster) != 0:
-            rfmkmedoid.drop('Last Order Date', axis = 1, inplace = True)
-            rfmkmedoid.drop('Monetary', axis = 1, inplace = True)
-            rfmkmedoid.drop('Tenure', axis = 1, inplace = True)
-            rfmkmedoid.astype({'Recency':'float64','Frequency':'float64'})
-
-            scaler = StandardScaler()
-            x_scaled=scaler.fit(rfmkmedoid)
-            x_scaled = scaler.fit_transform(rfmkmedoid)
-
-            
             kmedoids = KMedoids(n_clusters=int(numOfCluster)).fit(x_scaled)
             # rfmkmedoid.insert(0, 'Cluster', kmedoids.labels_)
             # db_index = davies_bouldin_score(rfmkmedoid, kmedoids.labels_)
@@ -96,4 +108,29 @@ def productcluster(cluster,rfm):
             savefig = plt.savefig('kmedoids.png')
             sns.scatterplot(x=rfmkmedoid['Recency'], y=rfmkmedoid['Frequency'], hue = rfmkmedoid['Cluster'], palette="Set2", s = 100, alpha = 0.7)
             st.pyplot(savefig)
+
+def clusterbydbikmedoids(x_scaled):
+    dbikmedoid = pd.DataFrame()
+
+    
+    for i in [2,3,4,5,6]:
+        kmedoids = KMedoids(n_clusters=i).fit(x_scaled)
+        db_index = davies_bouldin_score(x_scaled, kmedoids.labels_)
+        dbikmedoid['Klaster'] = i
+        dbikmedoid['DBI'] = db_index
+
+    return dbikmedoid.min()
+
+def clusterbydbikmeans(x_scaledkmeans):
+    dbikmeans = pd.DataFrame()
+
+    for i in [2,3,4,5,6]:
+        kmeans_scaled = KMeans(n_clusters=i,n_init='auto',init='k-means++')
+        kmeans_scaled.fit(x_scaledkmeans)
+        labels = kmeans_scaled.labels_
+        davies_bouldin_score(x_scaledkmeans, labels)
+        dbikmeans['Klaster'] = i
+        dbikmeans['DBI'] = davies_bouldin_score(x_scaledkmeans, labels)
+
+    return dbikmeans.min()
         
