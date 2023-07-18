@@ -89,9 +89,9 @@ def productcluster(cluster,rfm):
         x_scaled=scaler.fit(rfmkmedoid)
         x_scaled = scaler.fit_transform(rfmkmedoid)
 
-        st.warning(clusterbydbikmedoids(x_scaled))
+        # st.warning(clusterbydbikmedoids(x_scaled))
         if isAutoCluster:
-            numOfCluster = clusterbydbikmedoids(x_scaled)[0]['Klaster']
+            numOfCluster = clusterbydbikmedoids(x_scaled)['Klaster']
         else:
             numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=2, max_value=10, value=2, step=1)
             if int(numOfCluster) <= 0:
@@ -127,19 +127,23 @@ def clusterbydbikmedoids(x_scaled):
 
     dbikmedoid['Klaster'] = dbikmedoidklaster
     dbikmedoid['DBI'] = dbikmedoiddbi
-    
+
     return dbikmedoid.min()
 
 def clusterbydbikmeans(x_scaledkmeans):
-    dbikmeans = pd.DataFrame()
+    dbikmeans = pd.DataFrame({"Klaster":[],"DBI":[]})
+    dbikmeansklaster = []
+    dbikmeansdbi = []
 
     for i in [2,3,4,5,6]:
         kmeans_scaled = KMeans(n_clusters=i,n_init='auto',init='k-means++')
         kmeans_scaled.fit(x_scaledkmeans)
         labels = kmeans_scaled.labels_
-        davies_bouldin_score(x_scaledkmeans, labels)
-        dbikmeans['Klaster'] = i
-        dbikmeans['DBI'] = davies_bouldin_score(x_scaledkmeans, labels)
+        dbikmeansklaster.append(i)
+        dbikmeansdbi.append(davies_bouldin_score(x_scaledkmeans, labels))
+
+    dbikmeans['Klaster'] = dbikmeansklaster
+    dbikmeans['DBI'] = dbikmeansdbi
 
     return dbikmeans.min()
         
