@@ -32,7 +32,7 @@ def app():
         # gd.configure_side_bar()
         gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True,filterable=True)
         gridOptions = gd.build()
-        st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari",rfm[rfm['Last Order Date'] == rfm['Last Order Date'].min()][0] ,"s/d",rfm[rfm['Last Order Date'] == rfm['Last Order Date'].max()][0])
+        st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir")
         category = st.radio(
             "Informasi Yang Diinginkan",
             ('Total Order','Produk Yang Belum Lama Terjual',
