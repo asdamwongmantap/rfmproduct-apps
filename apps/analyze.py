@@ -13,6 +13,7 @@ def app():
     d = st.date_input(
         "Tanggal Analisa",
         datetime.date(2019, 7, 6))
+    st.write(d)
     st.write("Untuk Melakukan Analisa Produk, Pengguna Perlu melakukan upload data csv yang didapat dari datawarehouse terlebih dahulu")
     uploaded_file = st.file_uploader("Choose a file")
     if uploaded_file is not None:
