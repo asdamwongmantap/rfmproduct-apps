@@ -51,7 +51,7 @@ def productcluster(cluster,rfm):
         x_scaledkmeans = scalerkmeans.fit_transform(rfmkmeans)
 
         if isAutoCluster == 'Ya':
-            numOfCluster = clusterbydbikmeans(x_scaledkmeans)['Klaster']
+            numOfCluster = clusterbydbikmeans(x_scaledkmeans)[0]['Klaster']
         else:
             numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=2, max_value=10, value=2, step=1)
             if int(numOfCluster) <= 0:
@@ -89,8 +89,9 @@ def productcluster(cluster,rfm):
         x_scaled=scaler.fit(rfmkmedoid)
         x_scaled = scaler.fit_transform(rfmkmedoid)
 
+        st.warning(clusterbydbikmeans(x_scaledkmeans))
         if isAutoCluster:
-            numOfCluster = clusterbydbikmedoids(x_scaled)['Klaster']
+            numOfCluster = clusterbydbikmedoids(x_scaled)[0]['Klaster']
         else:
             numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=2, max_value=10, value=2, step=1)
             if int(numOfCluster) <= 0:
@@ -116,7 +117,6 @@ def productcluster(cluster,rfm):
 def clusterbydbikmedoids(x_scaled):
     dbikmedoid = pd.DataFrame()
 
-    
     for i in [2,3,4,5,6]:
         kmedoids = KMedoids(n_clusters=i).fit(x_scaled)
         db_index = davies_bouldin_score(x_scaled, kmedoids.labels_)
