@@ -103,10 +103,12 @@ def productcluster(cluster,rfm):
             # db_index = davies_bouldin_score(rfmkmedoid, kmedoids.labels_)
             # st.write('DBI Score Untuk K-Medoids adalah ',db_index)
             # rfmkmedoid['ClusterInt'] = rfmkmedoid['Cluster']
-            # rfmkmedoid['Cluster'] = rfmkmedoid['Cluster'].astype(str)
-            # rfmkmedoid.dtypes
-            # rfmkmedoid['Cluster'] = rfmkmedoid['Cluster'].replace(['0','1','2'],['Banyak Terjual','Cukup Terjual','Sedikit Terjual'])
-            rfmkmedoid['Cluster'] = kmedoids.labels_
+            if isAutoCluster == 'Ya':
+                rfmkmedoid['Cluster'] = rfmkmedoid['Cluster'].astype(str)
+                # rfmkmedoid.dtypes
+                rfmkmedoid['Cluster'] = rfmkmedoid['Cluster'].replace(['0','1'],['Sedikit Terjual','Banyak Terjual'])
+            else:
+                rfmkmedoid['Cluster'] = kmedoids.labels_
             st.set_option('deprecation.showPyplotGlobalUse', False)
 
             fig = plt.figure
