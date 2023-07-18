@@ -35,10 +35,6 @@ def productcluster(cluster,rfm):
     rfmkmeans = rfm
     rfmkmedoid = rfm
 
-    numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=2, max_value=10, value=2, step=1)
-    if int(numOfCluster) <= 0:
-        st.write("Jumlah klaster harus lebih dari 0")
-
     if cluster == 'K-Means':
         isAutoCluster = st.radio(
             "Apakah ingin melakukan penentuan klaster secara otomatis ?",
@@ -54,8 +50,12 @@ def productcluster(cluster,rfm):
         x_scaledkmeans=scalerkmeans.fit(rfmkmeans)
         x_scaledkmeans = scalerkmeans.fit_transform(rfmkmeans)
 
-        if isAutoCluster:
+        if isAutoCluster == 'Ya':
             numOfCluster = clusterbydbikmeans(x_scaledkmeans)['Klaster']
+        else:
+            numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=2, max_value=10, value=2, step=1)
+            if int(numOfCluster) <= 0:
+                st.write("Jumlah klaster harus lebih dari 0")
 
         if int(numOfCluster) != 0:
             kmeans_scaled = KMeans(int(numOfCluster))
@@ -91,6 +91,10 @@ def productcluster(cluster,rfm):
 
         if isAutoCluster:
             numOfCluster = clusterbydbikmedoids(x_scaled)['Klaster']
+        else:
+            numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=2, max_value=10, value=2, step=1)
+            if int(numOfCluster) <= 0:
+                st.write("Jumlah klaster harus lebih dari 0")
 
         if int(numOfCluster) != 0:
             kmedoids = KMedoids(n_clusters=int(numOfCluster)).fit(x_scaled)
