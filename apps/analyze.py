@@ -5,14 +5,13 @@ from mlxtend.frequent_patterns import apriori
 import numpy as np
 from decimal import *
 import re
-from datetime import datetime
+# from datetime import datetime
 from dateutil import parser
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
+import datetime
 
 def app():
-    d = st.date_input(
-        "Tanggal Analisa",
-        datetime.date(2019, 7, 6))
+    d = st.date_input("Tanggal Analisa", datetime.date(2019, 7, 6))
     st.write(d)
     st.write("Untuk Melakukan Analisa Produk, Pengguna Perlu melakukan upload data csv yang didapat dari datawarehouse terlebih dahulu")
     uploaded_file = st.file_uploader("Choose a file")
