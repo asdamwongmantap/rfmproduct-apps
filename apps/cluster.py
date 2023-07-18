@@ -120,8 +120,8 @@ def clusterbydbikmedoids(x_scaled):
     for i in [2,3,4,5,6]:
         kmedoids = KMedoids(n_clusters=i).fit(x_scaled)
         db_index = davies_bouldin_score(x_scaled, kmedoids.labels_)
-        dbikmedoid['Klaster'] = i
-        dbikmedoid['DBI'] = db_index
+        dbikmedoid[i]['Klaster'] = i
+        dbikmedoid[i]['DBI'] = db_index
 
     return dbikmedoid.min()
 
