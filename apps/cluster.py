@@ -50,6 +50,8 @@ def productcluster(cluster,rfm):
         x_scaledkmeans=scalerkmeans.fit(rfmkmeans)
         x_scaledkmeans = scalerkmeans.fit_transform(rfmkmeans)
 
+        st.write(numOfCluster)
+
         if isAutoCluster == 'Ya':
             numOfCluster = clusterbydbikmeans(x_scaledkmeans)['Klaster']
         else:
@@ -74,6 +76,7 @@ def productcluster(cluster,rfm):
                  clusters_scaled['Cluster_Kmeans'] = clusters_scaled['Cluster_Kmeans'].replace(['0','1','2','3'],['Cukup Terjual','Sedikit Terjual','Lumayan Terjual','Banyak Terjual'])
             else:
                  clusters_scaled['Cluster_Kmeans']=kmeans_scaled.fit_predict(x_scaledkmeans)
+
             st.set_option('deprecation.showPyplotGlobalUse', False)
             fig = plt.figure
             savefig = plt.savefig('kmeans.png')
