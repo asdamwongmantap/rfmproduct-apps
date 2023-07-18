@@ -116,13 +116,18 @@ def productcluster(cluster,rfm):
 
 def clusterbydbikmedoids(x_scaled):
     dbikmedoid = pd.DataFrame({"Klaster":[],"DBI":[]})
+    dbikmedoidklaster = []
+    dbikmedoiddbi = []
 
     for i in [2,3,4,5,6]:
         kmedoids = KMedoids(n_clusters=i).fit(x_scaled)
         db_index = davies_bouldin_score(x_scaled, kmedoids.labels_)
-        dbikmedoid['Klaster'].append(i)
-        dbikmedoid['DBI'].append(db_index)
+        dbikmedoidklaster.append(i)
+        dbikmedoiddbi.append(db_index)
 
+    dbikmedoid['Klaster'] = dbikmedoidklaster
+    dbikmedoid['DBI'] = dbikmedoiddbi
+    
     return dbikmedoid.min()
 
 def clusterbydbikmeans(x_scaledkmeans):
