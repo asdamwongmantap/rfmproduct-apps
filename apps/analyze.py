@@ -315,8 +315,8 @@ def rfmAll(data,snapShotDate):
     data['dateSplit'] = ""
     data['todaySplit'] = ""
     data['profit'] = 0
-    now = datetime.now()
-    today = now.strftime("%Y-%m-%d")
+    # now = datetime.now()
+    # today = now.strftime("%Y-%m-%d")
     for l, dfFrequentItemSuppDate in enumerate(data['Order Date']):
         splitDate = data.loc[data.index[l], 'Order Date'].split("T")[0]
         if len(splitDate) > 0:
