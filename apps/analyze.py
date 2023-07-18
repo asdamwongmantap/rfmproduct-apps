@@ -10,9 +10,10 @@ from dateutil import parser
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 import datetime
 
+
+
 def app():
-    d = st.date_input("Tanggal Analisa", datetime.date(2019, 7, 6))
-    st.write(d)
+    dateAnalyze = st.date_input("Tanggal Analisa", datetime.date(2019, 7, 6))
     st.write("Untuk Melakukan Analisa Produk, Pengguna Perlu melakukan upload data csv yang didapat dari datawarehouse terlebih dahulu")
     uploaded_file = st.file_uploader("Choose a file")
     if uploaded_file is not None:
@@ -29,7 +30,7 @@ def app():
         # totalOrder = getTotalOrder(data)
         # data = getMinSupport(data,totalOrder)
         # data = rfm1Item(data)
-        rfm = rfmAll(data)
+        rfm = rfmAll(data,dateAnalyze)
         gd = GridOptionsBuilder.from_dataframe(rfm)
         gd.configure_pagination(enabled=True,paginationPageSize=10)
         # gd.configure_side_bar()
@@ -309,7 +310,7 @@ def rfm2Item(data):
     dfFi2 = data.loc[(data['CountItem'] == 2) & (data['MinSupportFloat'] >= 0.00001)]
     return dfFi2
 
-def rfmAll(data):
+def rfmAll(data,snapShotDate):
     data['Order Date'].fillna('-')
     data['dateSplit'] = ""
     data['todaySplit'] = ""
@@ -321,7 +322,7 @@ def rfmAll(data):
         if len(splitDate) > 0:
             data.loc[data.index[l], 'dateSplit'] = splitDate
 
-            data.loc[data.index[l], 'todaySplit'] = '2023-07-03'
+            data.loc[data.index[l], 'todaySplit'] = snapShotDate
 
             data.loc[data.index[l], 'profit'] = data.loc[data.index[l], 'Subtotal'] - data.loc[data.index[l], 'Supplier Price']
 
