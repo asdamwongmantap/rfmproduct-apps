@@ -50,7 +50,7 @@ def productcluster(cluster,rfm):
         x_scaledkmeans=scalerkmeans.fit(rfmkmeans)
         x_scaledkmeans = scalerkmeans.fit_transform(rfmkmeans)
 
-        st.write(numOfCluster)
+        
 
         if isAutoCluster == 'Ya':
             numOfCluster = clusterbydbikmeans(x_scaledkmeans)['Klaster']
@@ -58,6 +58,8 @@ def productcluster(cluster,rfm):
             numOfCluster = st.number_input('Masukkan Jumlah Klaster Yang Diinginkan!', min_value=2, max_value=10, value=2, step=1)
             if int(numOfCluster) <= 0:
                 st.write("Jumlah klaster harus lebih dari 0")
+
+        st.write(numOfCluster)
 
         if int(numOfCluster) != 0:
             kmeans_scaled = KMeans(int(numOfCluster))
