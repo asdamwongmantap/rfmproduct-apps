@@ -318,15 +318,15 @@ def rfmAll(data):
         if len(splitDate) > 0:
             data.loc[data.index[l], 'dateSplit'] = splitDate
 
-            data.loc[data.index[l], 'todaySplit'] = today
+            data.loc[data.index[l], 'todaySplit'] = '2023-07-03'
 
             data.loc[data.index[l], 'profit'] = data.loc[data.index[l], 'Subtotal'] - data.loc[data.index[l], 'Supplier Price']
 
     dfDropCol2 = data
     data["todaySplit"] = pd.to_datetime(data["todaySplit"]) # excluding hours and minutes.
     data["dateSplit"] = pd.to_datetime(data["dateSplit"]) # excluding hours and minutes.
-    # snapshot = data["todaySplit"].max() # the last day is our max date
-    snapshot = '2023-07-03'
+    snapshot = data["todaySplit"].max() # the last day is our max date
+    # snapshot = '2023-07-03'
     sku_group = data.groupby("SKU") # grouping the sku id's to see every single sku's activity on r, f , m
     recency = (snapshot - sku_group["dateSplit"].max()) # the last day of grouped sku's transaction is captured with .max()
     frequency = sku_group["Order ID"].nunique() # how many times the sku made transactions?
