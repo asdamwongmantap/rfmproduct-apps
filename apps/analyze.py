@@ -10,6 +10,9 @@ from dateutil import parser
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
 def app():
+    d = st.date_input(
+        "Tanggal Analisa",
+        datetime.date(2019, 7, 6))
     st.write("Untuk Melakukan Analisa Produk, Pengguna Perlu melakukan upload data csv yang didapat dari datawarehouse terlebih dahulu")
     uploaded_file = st.file_uploader("Choose a file")
     if uploaded_file is not None:
@@ -32,7 +35,7 @@ def app():
         # gd.configure_side_bar()
         gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True,filterable=True)
         gridOptions = gd.build()
-        st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari ",rfm[rfm['First Order Date'] == rfm['First Order Date'].min()]['First Order Date'].iloc[0], "sampai dengan ",rfm[rfm['Last Order Date'] == rfm['Last Order Date'].max()]['Last Order Date'].iloc[0])
+        # st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari 01-Februari-2022 s/d 28-Februari-2023")
         category = st.radio(
             "Informasi Yang Diinginkan",
             ('Total Order','Produk Yang Belum Lama Terjual',
