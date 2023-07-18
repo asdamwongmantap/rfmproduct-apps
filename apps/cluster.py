@@ -138,7 +138,7 @@ def clusterbydbikmedoids(x_scaled):
     dbikmedoid['Klaster'] = dbikmedoidklaster
     dbikmedoid['DBI'] = dbikmedoiddbi
 
-    return dbikmedoid.min()
+    return dbikmedoid['DBI'].min()
 
 def clusterbydbikmeans(x_scaledkmeans):
     dbikmeans = pd.DataFrame({"Klaster":[],"DBI":[]})
@@ -155,5 +155,5 @@ def clusterbydbikmeans(x_scaledkmeans):
     dbikmeans['Klaster'] = dbikmeansklaster
     dbikmeans['DBI'] = dbikmeansdbi
 
-    return dbikmeans.min()
+    return dbikmeans['DBI'].min()
         
