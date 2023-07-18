@@ -89,7 +89,7 @@ def productcluster(cluster,rfm):
         x_scaled=scaler.fit(rfmkmedoid)
         x_scaled = scaler.fit_transform(rfmkmedoid)
 
-        st.warning(clusterbydbikmeans(x_scaledkmeans))
+        st.warning(clusterbydbikmedoids(x_scaled))
         if isAutoCluster:
             numOfCluster = clusterbydbikmedoids(x_scaled)[0]['Klaster']
         else:
