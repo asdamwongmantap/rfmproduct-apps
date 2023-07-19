@@ -19,10 +19,10 @@ def app():
     uploaded_file = st.file_uploader("Choose a file")
     if uploaded_file is not None:
         # ubah file csv menjadi dataframe
-        data = loadCsv(uploaded_file)
+        data,rfm = loadCsv(uploaded_file,dateAnalyze)
 
         # tampilkan 3 baris pertama
-        rfm = rfmAll(data,dateAnalyze)
+        # rfm = rfmAll(data,dateAnalyze)
         totalOrder = loadTotalOrder(data)
         totalProduk = len(rfm)
         option = st.selectbox(
@@ -198,7 +198,7 @@ def masking(data):
         subTotalMarkup = dfDropCol.loc[dfDropCol.index[i], 'Subtotal'] + 123456
         totalMarkup =  dfDropCol.loc[dfDropCol.index[i], 'Total'] + 123456
         #markup price product
-        obj = dfDropCol['Price'][i]
+        # obj = dfDropCol['Price'][i]
         # dfDropCol['Price'][i] = dfDropCol['Price'][i] + 400500 + i
         dfDropCol.loc[dfDropCol.index[i], 'Price'] = dfDropCol.loc[dfDropCol.index[i], 'Price'] + 123456
         # dfDropCol['Subtotal'][i] = dfDropCol['Subtotal'][i] + 123456
@@ -236,16 +236,16 @@ def masking(data):
 
 def getTotalOrder(data):
     # dfDropCol.value_counts('SKU')
-    sumValCounts = data.value_counts('SKU').sum()
-    sumValCountsByOrder = data.value_counts('Order ID').sum()
-    dfFrequentItem = data.value_counts('SKU',sort=True,ascending=False).reset_index(name='counts')
+    # sumValCounts = data.value_counts('SKU').sum()
+    # sumValCountsByOrder = data.value_counts('Order ID').sum()
+    # dfFrequentItem = data.value_counts('SKU',sort=True,ascending=False).reset_index(name='counts')
     dfFrequentItemByOrder = data.value_counts('Order ID',sort=True,ascending=False).reset_index(name='countsORDER')
-    dfFrequentItem['MinSupport'] = 0
-    for j, dfFrequentItemSupp in enumerate(dfFrequentItem['SKU']):
-        dfFrequentItem.loc[dfFrequentItem.index[j], 'MinSupport'] =  dfFrequentItem.loc[dfFrequentItem.index[j], 'counts'] / sumValCounts
+    # dfFrequentItem['MinSupport'] = 0
+    # for j, dfFrequentItemSupp in enumerate(dfFrequentItem['SKU']):
+    #     dfFrequentItem.loc[dfFrequentItem.index[j], 'MinSupport'] =  dfFrequentItem.loc[dfFrequentItem.index[j], 'counts'] / sumValCounts
     # dfFrequentItem
-    sumValCountsFI3 = len(dfFrequentItemByOrder)
-    return sumValCountsFI3
+    # sumValCountsFI3 = len(dfFrequentItemByOrder)
+    return len(dfFrequentItemByOrder)
 
 def getMinSupport(data,totalOrder):
     datasetItemdrop = data.drop_duplicates(["Order ID", "SKU"])
@@ -314,11 +314,13 @@ def rfmAll(data,snapShotDate):
     return rfm
 
 @st.cache_data
-def loadCsv(url):
+def loadCsv(url,dateAnalyze):
     df = pd.read_csv(url)
     data = deleteUnusedColumn(df)
     data = renameColumn(data)
-    return data
+
+    rfm = rfmAll(data,dateAnalyze)
+    return data,rfm
 
 @st.cache_data
 def loadTotalOrder(data):
