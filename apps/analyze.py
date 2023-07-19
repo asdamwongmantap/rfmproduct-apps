@@ -32,7 +32,7 @@ def app():
         # gd.configure_side_bar()
         gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True,filterable=True)
         gridOptions = gd.build()
-        st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari 01-Februari-2022 s/d 28-Februari-2023")
+        st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari ",rfm[rfm['First Order Date'] == rfm['First Order Date'].min()]['First Order Date'].iloc[0], "sampai dengan ",rfm[rfm['Last Order Date'] == rfm['Last Order Date'].max()]['Last Order Date'].iloc[0])
         category = st.radio(
             "Informasi Yang Diinginkan",
             ('Total Order','Produk Yang Belum Lama Terjual',
@@ -318,7 +318,7 @@ def rfmAll(data):
         if len(splitDate) > 0:
             data.loc[data.index[l], 'dateSplit'] = splitDate
 
-            data.loc[data.index[l], 'todaySplit'] = today
+            data.loc[data.index[l], 'todaySplit'] = '2023-07-03'
 
             data.loc[data.index[l], 'profit'] = data.loc[data.index[l], 'Subtotal'] - data.loc[data.index[l], 'Supplier Price']
 
@@ -326,6 +326,7 @@ def rfmAll(data):
     data["todaySplit"] = pd.to_datetime(data["todaySplit"]) # excluding hours and minutes.
     data["dateSplit"] = pd.to_datetime(data["dateSplit"]) # excluding hours and minutes.
     snapshot = data["todaySplit"].max() # the last day is our max date
+    # snapshot = '2023-07-03'
     sku_group = data.groupby("SKU") # grouping the sku id's to see every single sku's activity on r, f , m
     recency = (snapshot - sku_group["dateSplit"].max()) # the last day of grouped sku's transaction is captured with .max()
     frequency = sku_group["Order ID"].nunique() # how many times the sku made transactions?
@@ -335,8 +336,9 @@ def rfmAll(data):
     rfm["Recency"] = recency.dt.days # FORMAT CHANGE: timedelta64 to integer
     rfm["Frequency"] = frequency
     rfm["Monetary"] = monetary
-    rfm["Tenure"] = tenure.dt.days # FORMAT CHANGE: timedelta64 to integer
+    # rfm["Tenure"] = tenure.dt.days # FORMAT CHANGE: timedelta64 to integer
     rfm['Last Order Date'] = sku_group["dateSplit"].max()
+    rfm['First Order Date'] = sku_group["dateSplit"].min()
     # rfm.reset_index(inplace=True)
     return rfm
     
