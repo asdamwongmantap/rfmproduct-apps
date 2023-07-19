@@ -9,6 +9,8 @@ import re
 from dateutil import parser
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 import datetime
+import calendar
+import matplotlib.pyplot as plt
 
 
 def app():
@@ -17,54 +19,20 @@ def app():
     uploaded_file = st.file_uploader("Choose a file")
     if uploaded_file is not None:
         # ubah file csv menjadi dataframe
-        # df = pd.read_csv(uploaded_file)
         data = loadCsv(uploaded_file)
 
         # tampilkan 3 baris pertama
-        # st.write(df)
-
-
-        # data = deleteUnusedColumn(df)
-        # data = renameColumn(data)
-
         rfm = rfmAll(data,dateAnalyze)
-        gd = GridOptionsBuilder.from_dataframe(rfm)
-        gd.configure_pagination(enabled=True,paginationPageSize=10)
-        # gd.configure_side_bar()
-        gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True,filterable=True)
-        gridOptions = gd.build()
-        # st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari 01-Februari-2022 s/d 28-Februari-2023")
-        category = st.radio(
-            "Informasi Yang Diinginkan",
-            ('Total Order','Produk Yang Belum Lama Terjual',
-             'Produk Yang Banyak Terjual','Produk Yang Banyak Memberikan Keuntungan'))
+        option = st.selectbox(
+            'Silahkan pilih tampilan informasi yang ingin ditampilkan!',
+            ('-', 'Text', 'Visual'))
 
-        if category == 'Total Order':
-            totalOrder = loadTotalOrder(data)
-            st.write('Total Order Keseluruhan Sebanyak ',totalOrder)
-        elif category == 'Produk Yang Belum Lama Terjual':
-            st.write('Total Produk Yang Belum Lama Terjual Sebanyak ',len(rfm[rfm['Recency'] == rfm['Recency'].min()]))
-            st.write(rfm[rfm['Recency'] == rfm['Recency'].min()])
-            # gd = GridOptionsBuilder.from_dataframe(rfm[rfm['Recency'] == rfm['Recency'].min()])
-            # gd.configure_pagination(enabled=True,paginationPageSize=10)
-            # # gd.configure_side_bar()
-            # gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True,filterable=True)
-            # gridOptions = gd.build()
-            # AgGrid(rfm[rfm['Recency'] == rfm['Recency'].min()], gridOptions=gridOptions)
-        elif category == 'Produk Yang Banyak Terjual':
-            st.write('Total Produk Yang Banyak Terjual Sebanyak ',len(rfm[rfm['Frequency'] == rfm['Frequency'].max()]))
-            st.write(rfm[rfm['Frequency'] == rfm['Frequency'].max()])
-        elif category == 'Produk Yang Banyak Memberikan Keuntungan':
-            st.write('Total Produk Yang Banyak Memberikan Keuntungan Sebanyak ',len(rfm[rfm['Monetary'] == rfm['Monetary'].max()]))
-            st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
-            # gd = GridOptionsBuilder.from_dataframe(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
-            # gd.configure_pagination(enabled=True)
-            # gd.configure_side_bar()
-            # gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True)
-            # gridOptions = gd.build()
-            # AgGrid(rfm[rfm['Monetary'] == rfm['Monetary'].max()], gridOptions=gridOptions)
+        if option == 'Text':
+            infoByText(data,rfm)
+        elif option == 'Visual':
+            infoByChart(data,rfm)
 
-        # st.write(data)
+        
         return rfm
 
 def deleteUnusedColumn(df):
@@ -353,5 +321,109 @@ def loadCsv(url):
 @st.cache_data
 def loadTotalOrder(data):
     return getTotalOrder(data)
+
+def infoByText(data,rfm):
+    category = st.radio(
+            "Informasi Yang Diinginkan",
+            ('Total Order','Produk Yang Belum Lama Terjual',
+             'Produk Yang Banyak Terjual','Produk Yang Banyak Memberikan Keuntungan'))
+    if category == 'Total Order':
+        totalOrder = loadTotalOrder(data)
+        st.write('Total Order Keseluruhan Sebanyak ',totalOrder)
+    elif category == 'Produk Yang Belum Lama Terjual':
+        st.write('Total Produk Yang Belum Lama Terjual Sebanyak ',len(rfm[rfm['Recency'] == rfm['Recency'].min()]))
+        st.write(rfm[rfm['Recency'] == rfm['Recency'].min()])
+    elif category == 'Produk Yang Banyak Terjual':
+        st.write('Total Produk Yang Banyak Terjual Sebanyak ',len(rfm[rfm['Frequency'] == rfm['Frequency'].max()]))
+        st.write(rfm[rfm['Frequency'] == rfm['Frequency'].max()])
+    elif category == 'Produk Yang Banyak Memberikan Keuntungan':
+        st.write('Total Produk Yang Banyak Memberikan Keuntungan Sebanyak ',len(rfm[rfm['Monetary'] == rfm['Monetary'].max()]))
+        st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
+
+    return rfm
+
+def infoByChart(data,rfm):
+    rfm['Month'] = pd.DatetimeIndex(rfm['Last Order Date']).month
+    rfm['Year'] = pd.DatetimeIndex(rfm['Last Order Date']).year
+    rfm['MonthStr'] = rfm['Month'].apply(lambda x: calendar.month_abbr[x])
+    rfm['Year'] = rfm['Year'].astype(str)
+    rfm['YearShort'] = rfm['Year'].apply(lambda x: x[-2:])
+    rfm['MonthYearStr'] = rfm['MonthStr']+rfm['YearShort']
+    rfm['MonthYearSort'] = rfm['YearShort']+"-"+rfm['Month'].astype(str)
+
+
+    left_col, mid_col, right_col = st.columns(3)
+    with left_col:
+        st.subheader("Total Order:")
+        st.subheader(f"{loadTotalOrder(data)}")
+    with mid_col:
+        st.subheader("Total Produk:")
+        st.subheader(f"{len(rfm)}")
+    with right_col:
+        st.subheader("Profit Produk Tertinggi:")
+        st.subheader(f"{rfm[rfm['Monetary'] == rfm['Monetary'].max()]['Monetary']}")
+
+    st.markdown("---")
+
+    left_colchart, mid_colchart, right_colchart = st.columns(3)
+    with left_colchart:
+        st.subheader("Produk Berdasarkan Rentang Waktu (Recency):")
+        # group data for chart
+        monthYearSortDF = rfm.value_counts('MonthYearSort').reset_index(name='countsMonthYearSort').sort_values(by='MonthYearSort')
+        monthYearSortDF['MonthSplit'] = 0
+        for j, dfMonthYear in enumerate(monthYearSortDF['MonthYearSort']):
+            monthYearSortDF.loc[monthYearSortDF.index[j], 'MonthYearSplit'] = monthYearSortDF.loc[monthYearSortDF.index[j], 'MonthYearSort'].split("-")[0]
+            monthYearSortDF.loc[monthYearSortDF.index[j], 'MonthSplit'] =  int(monthYearSortDF.loc[monthYearSortDF.index[j], 'MonthYearSort'].split("-")[1])
+
+        monthYearSortDF['MonthStr'] = monthYearSortDF['MonthSplit'].apply(lambda x: calendar.month_name[x])
+        monthYearSortDF['MonthYearStr'] = monthYearSortDF['MonthStr']+" "+monthYearSortDF['MonthYearSplit']
+
+        # create chart
+        fig, ax = plt.subplots()
+        savefig = plt.savefig('product_recency.png')
+        ax.plot(monthYearSortDF['MonthYearStr'],monthYearSortDF['countsMonthYearSort'])
+        ax.tick_params(axis='x', rotation=70)
+        st.pyplot(savefig)
+
+    with mid_colchart:
+        st.subheader("Produk Berdasarkan Jumlah pembelian (Frequency):")
+        # group data for chart
+        for k, dfFrequency in enumerate(rfm['Frequency']):
+            if rfm.loc[rfm.index[k], 'Frequency'] <= 6:
+                rfm.loc[rfm.index[k], 'FrequencyClass'] = "0 - 6"
+            elif rfm.loc[rfm.index[k], 'Frequency'] > 6 and rfm.loc[rfm.index[k], 'Frequency'] <= 50:
+                rfm.loc[rfm.index[k], 'FrequencyClass'] = "7 - 50"
+            elif rfm.loc[rfm.index[k], 'Frequency'] > 50:
+                rfm.loc[rfm.index[k], 'FrequencyClass'] = "> 50"
+
+        frequentcountDF = rfm.value_counts('FrequencyClass').reset_index(name='countsFrequencyClass')
+
+        # create chart
+        fig, ax = plt.subplots()
+        savefig = plt.savefig('product_frequency.png')
+        ax.pie(frequentcountDF['countsFrequencyClass'], labels=frequentcountDF['FrequencyClass'])
+        st.pyplot(savefig)
+
+    with right_colchart:
+        st.subheader("Produk Berdasarkan Keuntungan / Profit (Monetary):")
+        # group data for chart
+        for k, dfMonetary in enumerate(rfm['Monetary']):
+            if rfm.loc[rfm.index[k], 'Monetary'] <= 500000:
+                rfm.loc[rfm.index[k], 'MonetaryClass'] = "1 - 500.000"
+            elif rfm.loc[rfm.index[k], 'Monetary'] > 500000 and rfm.loc[rfm.index[k], 'Monetary'] <= 5000000:
+                rfm.loc[rfm.index[k], 'MonetaryClass'] = "501.000 - 5.000.000"
+            elif rfm.loc[rfm.index[k], 'Monetary'] > 5000000:
+                rfm.loc[rfm.index[k], 'MonetaryClass'] = "> 5.000.000"
+
+        monetarycountDF = rfm.value_counts('MonetaryClass').reset_index(name='countsMonetaryClass').sort_values('MonetaryClass')
+
+        # create chart
+        fig, ax = plt.subplots()
+        savefig = plt.savefig('product_recency.png')
+        ax.bar(monetarycountDF['MonetaryClass'],monetarycountDF['countsMonetaryClass'])
+        ax.tick_params(axis='x', rotation=70)
+        st.pyplot(savefig)
+
+    return rfm
 
     
