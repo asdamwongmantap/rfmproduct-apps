@@ -6,8 +6,7 @@ from apps import dashboard,analyze,cluster # import your app modules here
 import pandas as pd
 from streamlit_option_menu import option_menu
 
-
-st.set_page_config(page_title="RFMProduct-Apps", page_icon=None, layout="centered", initial_sidebar_state="auto", menu_items=None)
+st.set_page_config(page_title="RFMProduct-Apps", page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
 
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)

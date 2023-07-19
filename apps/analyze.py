@@ -361,7 +361,8 @@ def infoByChart(data,rfm):
         st.write(f"{len(rfm)}")
     with right_col:
         st.write("Profit Produk Tertinggi:")
-        st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()]['Monetary'])
+        profitHigh = rfm[rfm['Monetary'] == rfm['Monetary'].max()]
+        st.write(profitHigh['Monetary'])
 
     st.markdown("---")
 
