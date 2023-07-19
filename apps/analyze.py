@@ -373,9 +373,7 @@ def infoByChart(rfm,totalOrder,totalProduk):
         st.write(f" Rp. {maxMonetary}")
 
     st.markdown("---")
-
     st.title(":bar_chart: RFM Chart")
-
     st.markdown("---")
 
     left_colchart, mid_colchart, right_colchart = st.columns(3)
@@ -438,9 +436,7 @@ def infoByChart(rfm,totalOrder,totalProduk):
         st.pyplot(savefig)
 
     st.markdown("---")
-
-    st.title(":table: RFM List")
-
+    st.title(":memo: RFM List")
     st.markdown("---")
 
     left_collist, mid_collist, right_collist = st.columns(3)
