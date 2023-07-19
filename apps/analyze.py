@@ -11,7 +11,7 @@ from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 import datetime
 
 
-
+@st.cache_data
 def app():
     dateAnalyze = st.date_input("Tanggal Analisa", datetime.date(2023, 7, 3))
     st.write("Untuk Melakukan Analisa Produk, Pengguna Perlu melakukan upload data csv yang didapat dari datawarehouse terlebih dahulu")
