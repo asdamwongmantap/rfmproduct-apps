@@ -23,14 +23,16 @@ def app():
 
         # tampilkan 3 baris pertama
         rfm = rfmAll(data,dateAnalyze)
+        totalOrder = loadTotalOrder(data)
+        totalProduk = len(rfm)
         option = st.selectbox(
             'Silahkan pilih tampilan informasi yang ingin ditampilkan!',
             ('-', 'Text', 'Visual'))
 
         if option == 'Text':
-            infoByText(data,rfm)
+            infoByText(rfm,totalOrder,totalProduk)
         elif option == 'Visual':
-            infoByChart(data,rfm)
+            infoByChart(rfm,totalOrder,totalProduk)
 
         
         return rfm
@@ -322,14 +324,15 @@ def loadCsv(url):
 def loadTotalOrder(data):
     return getTotalOrder(data)
 
-def infoByText(data,rfm):
+def infoByText(rfm,totalOrder,totalProduk):
     category = st.radio(
             "Informasi Yang Diinginkan",
-            ('Total Order','Produk Yang Belum Lama Terjual',
+            ('Total Order','Total Produk','Produk Yang Belum Lama Terjual',
              'Produk Yang Banyak Terjual','Produk Yang Banyak Memberikan Keuntungan'))
     if category == 'Total Order':
-        totalOrder = loadTotalOrder(data)
         st.write('Total Order Keseluruhan Sebanyak ',totalOrder)
+    elif category == 'Total Produk':
+        st.write('Total Produk Keseluruhan Sebanyak ',totalProduk)
     elif category == 'Produk Yang Belum Lama Terjual':
         st.write('Total Produk Yang Belum Lama Terjual Sebanyak ',len(rfm[rfm['Recency'] == rfm['Recency'].min()]))
         st.write(rfm[rfm['Recency'] == rfm['Recency'].min()])
@@ -342,7 +345,7 @@ def infoByText(data,rfm):
 
     return rfm
 
-def infoByChart(data,rfm):
+def infoByChart(rfm,totalOrder,totalProduk):
     rfm['Month'] = pd.DatetimeIndex(rfm['Last Order Date']).month
     rfm['Year'] = pd.DatetimeIndex(rfm['Last Order Date']).year
     rfm['MonthStr'] = rfm['Month'].apply(lambda x: calendar.month_abbr[x])
@@ -355,10 +358,10 @@ def infoByChart(data,rfm):
     left_col, mid_col, right_col = st.columns(3)
     with left_col:
         st.write("Total Order:")
-        st.write(f"{loadTotalOrder(data)}")
+        st.write(f"{totalOrder}")
     with mid_col:
         st.write("Total Produk:")
-        st.write(f"{len(rfm)}")
+        st.write(f"{totalProduk}")
     with right_col:
         maxMonetary = 0
         st.write("Profit Produk Tertinggi:")
