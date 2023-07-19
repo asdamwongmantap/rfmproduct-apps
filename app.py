@@ -190,7 +190,7 @@ def rfmAll(data,snapShotDate):
 
             data.loc[data.index[l], 'profit'] = data.loc[data.index[l], 'Subtotal'] - data.loc[data.index[l], 'Supplier Price']
 
-    dfDropCol2 = data
+    # dfDropCol2 = data
     data["todaySplit"] = pd.to_datetime(data["todaySplit"]) # excluding hours and minutes.
     data["dateSplit"] = pd.to_datetime(data["dateSplit"]) # excluding hours and minutes.
     snapshot = data["todaySplit"].max() # the last day is our max date
@@ -206,7 +206,7 @@ def rfmAll(data,snapShotDate):
     rfm["Monetary"] = monetary
     # rfm["Tenure"] = tenure.dt.days # FORMAT CHANGE: timedelta64 to integer
     rfm['Last Order Date'] = sku_group["dateSplit"].max()
-    rfm['First Order Date'] = sku_group["dateSplit"].min()
+    # rfm['First Order Date'] = sku_group["dateSplit"].min()
     # rfm.reset_index(inplace=True)
     return rfm
 
