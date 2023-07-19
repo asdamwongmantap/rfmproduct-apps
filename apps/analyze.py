@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 
 def app():
     dateAnalyze = st.date_input("Tanggal Analisa", datetime.date(2023, 7, 3))
+    if dateAnalyze == "":
+        dateAnalyze = datetime.datetime.now.strftime("%Y-%m-%d")
     st.write("Untuk Melakukan Analisa Produk, Pengguna Perlu melakukan upload data csv yang didapat dari datawarehouse terlebih dahulu")
     uploaded_file = st.file_uploader("Choose a file")
     if uploaded_file is not None:
