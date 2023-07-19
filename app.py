@@ -210,7 +210,7 @@ def rfmAll(data,snapShotDate):
     # rfm.reset_index(inplace=True)
     return rfm
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def loadCsv(url,dateAnalyze):
     df = pd.read_csv(url)
     data = deleteUnusedColumn(df)
