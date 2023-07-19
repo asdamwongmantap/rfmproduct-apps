@@ -42,7 +42,7 @@ def productcluster(cluster,rfm):
        
         rfmkmeans.drop('Last Order Date', axis = 1, inplace = True)
         rfmkmeans.drop('Monetary', axis = 1, inplace = True)
-        rfmkmeans.drop('Tenure', axis = 1, inplace = True)
+        # rfmkmeans.drop('Tenure', axis = 1, inplace = True)
         rfmkmeans.astype({'Recency':'float64','Frequency':'float64'})
 
         
@@ -90,7 +90,7 @@ def productcluster(cluster,rfm):
        
         rfmkmedoid.drop('Last Order Date', axis = 1, inplace = True)
         rfmkmedoid.drop('Monetary', axis = 1, inplace = True)
-        rfmkmedoid.drop('Tenure', axis = 1, inplace = True)
+        # rfmkmedoid.drop('Tenure', axis = 1, inplace = True)
         rfmkmedoid.astype({'Recency':'float64','Frequency':'float64'})
 
         scaler = StandardScaler()

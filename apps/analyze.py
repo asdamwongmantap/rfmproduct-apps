@@ -5,65 +5,36 @@ from mlxtend.frequent_patterns import apriori
 import numpy as np
 from decimal import *
 import re
-from datetime import datetime
+# from datetime import datetime
 from dateutil import parser
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
+import datetime
+import calendar
+import matplotlib.pyplot as plt
+
 
 def app():
-    st.write("Untuk Melakukan Analisa Produk, Pengguna Perlu melakukan upload data csv yang didapat dari datawarehouse terlebih dahulu")
+    dateAnalyze = st.date_input("Tanggal Analisa", datetime.date(2023, 7, 3))
+    st.write("Untuk Melakukan Analisa Produk, Pengguna perlu melakukan input tanggal analisa dan upload data csv yang didapat dari datawarehouse terlebih dahulu")
     uploaded_file = st.file_uploader("Choose a file")
     if uploaded_file is not None:
         # ubah file csv menjadi dataframe
-        df = pd.read_csv(uploaded_file)
+        data,rfm = loadCsv(uploaded_file,dateAnalyze)
 
         # tampilkan 3 baris pertama
-        # st.write(df)
+        # rfm = rfmAll(data,dateAnalyze)
+        totalOrder = loadTotalOrder(data)
+        totalProduk = len(rfm)
+        option = st.selectbox(
+            'Silahkan pilih tampilan informasi yang ingin ditampilkan!',
+            ('-', 'Text', 'Visual'))
 
+        if option == 'Text':
+            infoByText(rfm,totalOrder,totalProduk)
+        elif option == 'Visual':
+            infoByChart(rfm,totalOrder,totalProduk)
 
-        data = deleteUnusedColumn(df)
-        data = renameColumn(data)
-        # data = masking(data)
-        # totalOrder = getTotalOrder(data)
-        # data = getMinSupport(data,totalOrder)
-        # data = rfm1Item(data)
-        rfm = rfmAll(data)
-        gd = GridOptionsBuilder.from_dataframe(rfm)
-        gd.configure_pagination(enabled=True,paginationPageSize=10)
-        # gd.configure_side_bar()
-        gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True,filterable=True)
-        gridOptions = gd.build()
-        st.write("Data yang ditampilkan berdasarkan file data produk yang diupload yaitu 1 tahun terakhir dari ",rfm[rfm['First Order Date'] == rfm['First Order Date'].min()]['First Order Date'].iloc[0], "sampai dengan ",rfm[rfm['Last Order Date'] == rfm['Last Order Date'].max()]['Last Order Date'].iloc[0])
-        category = st.radio(
-            "Informasi Yang Diinginkan",
-            ('Total Order','Produk Yang Belum Lama Terjual',
-             'Produk Yang Banyak Terjual','Produk Yang Banyak Memberikan Keuntungan'))
-
-        if category == 'Total Order':
-            totalOrder = getTotalOrder(data)
-            st.write('Total Order Keseluruhan Sebanyak ',totalOrder)
-        elif category == 'Produk Yang Belum Lama Terjual':
-            st.write('Total Produk Yang Belum Lama Terjual Sebanyak ',len(rfm[rfm['Recency'] == rfm['Recency'].min()]))
-            st.write(rfm[rfm['Recency'] == rfm['Recency'].min()])
-            # gd = GridOptionsBuilder.from_dataframe(rfm[rfm['Recency'] == rfm['Recency'].min()])
-            # gd.configure_pagination(enabled=True,paginationPageSize=10)
-            # # gd.configure_side_bar()
-            # gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True,filterable=True)
-            # gridOptions = gd.build()
-            # AgGrid(rfm[rfm['Recency'] == rfm['Recency'].min()], gridOptions=gridOptions)
-        elif category == 'Produk Yang Banyak Terjual':
-            st.write('Total Produk Yang Banyak Terjual Sebanyak ',len(rfm[rfm['Frequency'] == rfm['Frequency'].max()]))
-            st.write(rfm[rfm['Frequency'] == rfm['Frequency'].max()])
-        elif category == 'Produk Yang Banyak Memberikan Keuntungan':
-            st.write('Total Produk Yang Banyak Memberikan Keuntungan Sebanyak ',len(rfm[rfm['Monetary'] == rfm['Monetary'].max()]))
-            st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
-            # gd = GridOptionsBuilder.from_dataframe(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
-            # gd.configure_pagination(enabled=True)
-            # gd.configure_side_bar()
-            # gd.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True)
-            # gridOptions = gd.build()
-            # AgGrid(rfm[rfm['Monetary'] == rfm['Monetary'].max()], gridOptions=gridOptions)
-
-        # st.write(data)
+        
         return rfm
 
 def deleteUnusedColumn(df):
@@ -227,7 +198,7 @@ def masking(data):
         subTotalMarkup = dfDropCol.loc[dfDropCol.index[i], 'Subtotal'] + 123456
         totalMarkup =  dfDropCol.loc[dfDropCol.index[i], 'Total'] + 123456
         #markup price product
-        obj = dfDropCol['Price'][i]
+        # obj = dfDropCol['Price'][i]
         # dfDropCol['Price'][i] = dfDropCol['Price'][i] + 400500 + i
         dfDropCol.loc[dfDropCol.index[i], 'Price'] = dfDropCol.loc[dfDropCol.index[i], 'Price'] + 123456
         # dfDropCol['Subtotal'][i] = dfDropCol['Subtotal'][i] + 123456
@@ -265,16 +236,16 @@ def masking(data):
 
 def getTotalOrder(data):
     # dfDropCol.value_counts('SKU')
-    sumValCounts = data.value_counts('SKU').sum()
-    sumValCountsByOrder = data.value_counts('Order ID').sum()
-    dfFrequentItem = data.value_counts('SKU',sort=True,ascending=False).reset_index(name='counts')
+    # sumValCounts = data.value_counts('SKU').sum()
+    # sumValCountsByOrder = data.value_counts('Order ID').sum()
+    # dfFrequentItem = data.value_counts('SKU',sort=True,ascending=False).reset_index(name='counts')
     dfFrequentItemByOrder = data.value_counts('Order ID',sort=True,ascending=False).reset_index(name='countsORDER')
-    dfFrequentItem['MinSupport'] = 0
-    for j, dfFrequentItemSupp in enumerate(dfFrequentItem['SKU']):
-        dfFrequentItem.loc[dfFrequentItem.index[j], 'MinSupport'] =  dfFrequentItem.loc[dfFrequentItem.index[j], 'counts'] / sumValCounts
+    # dfFrequentItem['MinSupport'] = 0
+    # for j, dfFrequentItemSupp in enumerate(dfFrequentItem['SKU']):
+    #     dfFrequentItem.loc[dfFrequentItem.index[j], 'MinSupport'] =  dfFrequentItem.loc[dfFrequentItem.index[j], 'counts'] / sumValCounts
     # dfFrequentItem
-    sumValCountsFI3 = len(dfFrequentItemByOrder)
-    return sumValCountsFI3
+    # sumValCountsFI3 = len(dfFrequentItemByOrder)
+    return len(dfFrequentItemByOrder)
 
 def getMinSupport(data,totalOrder):
     datasetItemdrop = data.drop_duplicates(["Order ID", "SKU"])
@@ -306,19 +277,19 @@ def rfm2Item(data):
     dfFi2 = data.loc[(data['CountItem'] == 2) & (data['MinSupportFloat'] >= 0.00001)]
     return dfFi2
 
-def rfmAll(data):
+def rfmAll(data,snapShotDate):
     data['Order Date'].fillna('-')
     data['dateSplit'] = ""
     data['todaySplit'] = ""
     data['profit'] = 0
-    now = datetime.now()
-    today = now.strftime("%Y-%m-%d")
+    # now = datetime.now()
+    # today = now.strftime("%Y-%m-%d")
     for l, dfFrequentItemSuppDate in enumerate(data['Order Date']):
         splitDate = data.loc[data.index[l], 'Order Date'].split("T")[0]
         if len(splitDate) > 0:
             data.loc[data.index[l], 'dateSplit'] = splitDate
 
-            data.loc[data.index[l], 'todaySplit'] = '2023-07-03'
+            data.loc[data.index[l], 'todaySplit'] = snapShotDate
 
             data.loc[data.index[l], 'profit'] = data.loc[data.index[l], 'Subtotal'] - data.loc[data.index[l], 'Supplier Price']
 
@@ -341,4 +312,144 @@ def rfmAll(data):
     rfm['First Order Date'] = sku_group["dateSplit"].min()
     # rfm.reset_index(inplace=True)
     return rfm
+
+@st.cache_data
+def loadCsv(url,dateAnalyze):
+    df = pd.read_csv(url)
+    data = deleteUnusedColumn(df)
+    data = renameColumn(data)
+
+    rfm = rfmAll(data,dateAnalyze)
+    return data,rfm
+
+@st.cache_data
+def loadTotalOrder(data):
+    return getTotalOrder(data)
+
+def infoByText(rfm,totalOrder,totalProduk):
+    category = st.radio(
+            "Informasi Yang Diinginkan",
+            ('Total Order','Total Produk','Produk Yang Belum Lama Terjual',
+             'Produk Yang Banyak Terjual','Produk Yang Banyak Memberikan Keuntungan'))
+    if category == 'Total Order':
+        st.write('Total Order Keseluruhan Sebanyak ',totalOrder)
+    elif category == 'Total Produk':
+        st.write('Total Produk Keseluruhan Sebanyak ',totalProduk)
+    elif category == 'Produk Yang Belum Lama Terjual':
+        st.write('Total Produk Yang Belum Lama Terjual Sebanyak ',len(rfm[rfm['Recency'] == rfm['Recency'].min()]))
+        st.write(rfm[rfm['Recency'] == rfm['Recency'].min()])
+    elif category == 'Produk Yang Banyak Terjual':
+        st.write('Total Produk Yang Banyak Terjual Sebanyak ',len(rfm[rfm['Frequency'] == rfm['Frequency'].max()]))
+        st.write(rfm[rfm['Frequency'] == rfm['Frequency'].max()])
+    elif category == 'Produk Yang Banyak Memberikan Keuntungan':
+        st.write('Total Produk Yang Banyak Memberikan Keuntungan Sebanyak ',len(rfm[rfm['Monetary'] == rfm['Monetary'].max()]))
+        st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
+
+    return rfm
+
+def infoByChart(rfm,totalOrder,totalProduk):
+    rfm['Month'] = pd.DatetimeIndex(rfm['Last Order Date']).month
+    rfm['Year'] = pd.DatetimeIndex(rfm['Last Order Date']).year
+    rfm['MonthStr'] = rfm['Month'].apply(lambda x: calendar.month_abbr[x])
+    rfm['Year'] = rfm['Year'].astype(str)
+    rfm['YearShort'] = rfm['Year'].apply(lambda x: x[-2:])
+    rfm['MonthYearStr'] = rfm['MonthStr']+rfm['YearShort']
+    rfm['MonthYearSort'] = rfm['YearShort']+"-"+rfm['Month'].astype(str)
+
+
+    left_col, mid_col, right_col = st.columns(3)
+    with left_col:
+        st.write("Total Order:")
+        st.write(f"{totalOrder}")
+    with mid_col:
+        st.write("Total Produk:")
+        st.write(f"{totalProduk}")
+    with right_col:
+        maxMonetary = 0
+        st.write("Profit Produk Tertinggi:")
+        profitHigh = rfm[rfm['Monetary'] == rfm['Monetary'].max()]
+        for l, dfMonetaryHigh in enumerate(profitHigh['Monetary']):
+            maxMonetary = profitHigh.loc[profitHigh.index[l], 'Monetary']
+        st.write(f" Rp. {maxMonetary}")
+
+    st.markdown("---")
+    st.title(":bar_chart: RFM Chart")
+    st.markdown("---")
+
+    left_colchart, mid_colchart, right_colchart = st.columns(3)
+    with left_colchart:
+        st.write("Produk Berdasarkan Rentang Waktu (Recency):")
+        # group data for chart
+        monthYearSortDF = rfm.value_counts('MonthYearSort').reset_index(name='countsMonthYearSort').sort_values(by='MonthYearSort')
+        monthYearSortDF['MonthSplit'] = 0
+        for j, dfMonthYear in enumerate(monthYearSortDF['MonthYearSort']):
+            monthYearSortDF.loc[monthYearSortDF.index[j], 'MonthYearSplit'] = monthYearSortDF.loc[monthYearSortDF.index[j], 'MonthYearSort'].split("-")[0]
+            monthYearSortDF.loc[monthYearSortDF.index[j], 'MonthSplit'] =  int(monthYearSortDF.loc[monthYearSortDF.index[j], 'MonthYearSort'].split("-")[1])
+
+        monthYearSortDF['MonthStr'] = monthYearSortDF['MonthSplit'].apply(lambda x: calendar.month_name[x])
+        monthYearSortDF['MonthYearStr'] = monthYearSortDF['MonthStr']+" "+monthYearSortDF['MonthYearSplit']
+
+        # create chart
+        fig, ax = plt.subplots()
+        savefig = plt.savefig('product_recency.png')
+        ax.plot(monthYearSortDF['MonthYearStr'],monthYearSortDF['countsMonthYearSort'])
+        ax.tick_params(axis='x', rotation=70)
+        st.pyplot(savefig)
+
+    with mid_colchart:
+        st.write("Produk Berdasarkan Pembelian (Frequency):")
+        # group data for chart
+        for k, dfFrequency in enumerate(rfm['Frequency']):
+            if rfm.loc[rfm.index[k], 'Frequency'] <= 6:
+                rfm.loc[rfm.index[k], 'FrequencyClass'] = "0 - 6"
+            elif rfm.loc[rfm.index[k], 'Frequency'] > 6 and rfm.loc[rfm.index[k], 'Frequency'] <= 50:
+                rfm.loc[rfm.index[k], 'FrequencyClass'] = "7 - 50"
+            elif rfm.loc[rfm.index[k], 'Frequency'] > 50:
+                rfm.loc[rfm.index[k], 'FrequencyClass'] = "> 50"
+
+        frequentcountDF = rfm.value_counts('FrequencyClass').reset_index(name='countsFrequencyClass')
+
+        # create chart
+        fig, ax = plt.subplots()
+        savefig = plt.savefig('product_frequency.png')
+        ax.pie(frequentcountDF['countsFrequencyClass'], labels=frequentcountDF['FrequencyClass'])
+        st.pyplot(savefig)
+
+    with right_colchart:
+        st.write("Produk Berdasarkan Keuntungan (Monetary):")
+        # group data for chart
+        for k, dfMonetary in enumerate(rfm['Monetary']):
+            if rfm.loc[rfm.index[k], 'Monetary'] <= 500000:
+                rfm.loc[rfm.index[k], 'MonetaryClass'] = "1 - 500.000"
+            elif rfm.loc[rfm.index[k], 'Monetary'] > 500000 and rfm.loc[rfm.index[k], 'Monetary'] <= 5000000:
+                rfm.loc[rfm.index[k], 'MonetaryClass'] = "501.000 - 5.000.000"
+            elif rfm.loc[rfm.index[k], 'Monetary'] > 5000000:
+                rfm.loc[rfm.index[k], 'MonetaryClass'] = "> 5.000.000"
+
+        monetarycountDF = rfm.value_counts('MonetaryClass').reset_index(name='countsMonetaryClass').sort_values('MonetaryClass')
+
+        # create chart
+        fig, ax = plt.subplots()
+        savefig = plt.savefig('product_recency.png')
+        ax.bar(monetarycountDF['MonetaryClass'],monetarycountDF['countsMonetaryClass'])
+        ax.tick_params(axis='x', rotation=70)
+        st.pyplot(savefig)
+
+    st.markdown("---")
+    st.title(":memo: RFM List")
+    st.markdown("---")
+
+    left_collist, mid_collist, right_collist = st.columns(3)
+    with left_collist:
+        st.write("Produk Berdasarkan Rentang Waktu (Recency):")
+        st.write(rfm[rfm['Recency'] == rfm['Recency'].min()])
+    with mid_collist:
+        st.write("Produk Berdasarkan Pembelian (Frequency):")
+        st.write(rfm[rfm['Frequency'] == rfm['Frequency'].max()])
+    with right_collist:
+        st.write("Produk Berdasarkan Keuntungan (Monetary):")
+        st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
+
+    return rfm
+
     
