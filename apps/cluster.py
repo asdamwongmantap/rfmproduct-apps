@@ -153,7 +153,5 @@ def clusterbydbikmeans(x_scaledkmeans):
     dbikmeans['Klaster'] = dbikmeansklaster
     dbikmeans['DBI'] = dbikmeansdbi
 
-    st.write(dbikmeans)
-
     return dbikmeans[dbikmeans['DBI'] == dbikmeans['DBI'].min()]
         
