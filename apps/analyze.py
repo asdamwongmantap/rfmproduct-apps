@@ -17,7 +17,8 @@ def app():
     uploaded_file = st.file_uploader("Choose a file")
     if uploaded_file is not None:
         # ubah file csv menjadi dataframe
-        df = pd.read_csv(uploaded_file)
+        # df = pd.read_csv(uploaded_file)
+        df = loadCsv(uploaded_file)
 
         # tampilkan 3 baris pertama
         # st.write(df)
@@ -309,7 +310,6 @@ def rfm2Item(data):
     dfFi2 = data.loc[(data['CountItem'] == 2) & (data['MinSupportFloat'] >= 0.00001)]
     return dfFi2
 
-@st.cache_data
 def rfmAll(data,snapShotDate):
     data['Order Date'].fillna('-')
     data['dateSplit'] = ""
@@ -345,4 +345,9 @@ def rfmAll(data,snapShotDate):
     rfm['First Order Date'] = sku_group["dateSplit"].min()
     # rfm.reset_index(inplace=True)
     return rfm
+
+@st.cache_data
+def loadCsv(url):
+    df = pd.read_csv(url)
+    return df
     
