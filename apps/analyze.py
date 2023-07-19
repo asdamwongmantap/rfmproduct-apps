@@ -374,6 +374,10 @@ def infoByChart(rfm,totalOrder,totalProduk):
 
     st.markdown("---")
 
+    st.title(":bar_chart: RFM Chart")
+
+    st.markdown("---")
+
     left_colchart, mid_colchart, right_colchart = st.columns(3)
     with left_colchart:
         st.write("Produk Berdasarkan Rentang Waktu (Recency):")
@@ -395,7 +399,7 @@ def infoByChart(rfm,totalOrder,totalProduk):
         st.pyplot(savefig)
 
     with mid_colchart:
-        st.write("Produk Berdasarkan Jumlah pembelian (Frequency):")
+        st.write("Produk Berdasarkan Pembelian (Frequency):")
         # group data for chart
         for k, dfFrequency in enumerate(rfm['Frequency']):
             if rfm.loc[rfm.index[k], 'Frequency'] <= 6:
@@ -414,7 +418,7 @@ def infoByChart(rfm,totalOrder,totalProduk):
         st.pyplot(savefig)
 
     with right_colchart:
-        st.write("Produk Berdasarkan Keuntungan / Profit (Monetary):")
+        st.write("Produk Berdasarkan Keuntungan (Monetary):")
         # group data for chart
         for k, dfMonetary in enumerate(rfm['Monetary']):
             if rfm.loc[rfm.index[k], 'Monetary'] <= 500000:
@@ -432,6 +436,23 @@ def infoByChart(rfm,totalOrder,totalProduk):
         ax.bar(monetarycountDF['MonetaryClass'],monetarycountDF['countsMonetaryClass'])
         ax.tick_params(axis='x', rotation=70)
         st.pyplot(savefig)
+
+    st.markdown("---")
+
+    st.title(":table: RFM List")
+
+    st.markdown("---")
+
+    left_collist, mid_collist, right_collist = st.columns(3)
+    with left_collist:
+        st.write("Produk Berdasarkan Rentang Waktu (Recency):")
+        st.write(rfm[rfm['Recency'] == rfm['Recency'].min()])
+    with mid_collist:
+        st.write("Produk Berdasarkan Pembelian (Frequency):")
+        st.write(rfm[rfm['Frequency'] == rfm['Frequency'].max()])
+    with right_collist:
+        st.write("Produk Berdasarkan Keuntungan (Monetary):")
+        st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()])
 
     return rfm
 
