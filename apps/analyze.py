@@ -40,7 +40,7 @@ def app():
              'Produk Yang Banyak Terjual','Produk Yang Banyak Memberikan Keuntungan'))
 
         if category == 'Total Order':
-            totalOrder = getTotalOrder(data)
+            totalOrder = loadTotalOrder(data)
             st.write('Total Order Keseluruhan Sebanyak ',totalOrder)
         elif category == 'Produk Yang Belum Lama Terjual':
             st.write('Total Produk Yang Belum Lama Terjual Sebanyak ',len(rfm[rfm['Recency'] == rfm['Recency'].min()]))
@@ -349,5 +349,9 @@ def loadCsv(url):
     data = deleteUnusedColumn(df)
     data = renameColumn(data)
     return data
+
+@st.cache_data
+def loadTotalOrder(data):
+    return getTotalOrder(data)
 
     
