@@ -360,9 +360,12 @@ def infoByChart(data,rfm):
         st.write("Total Produk:")
         st.write(f"{len(rfm)}")
     with right_col:
+        maxMonetary = 0
         st.write("Profit Produk Tertinggi:")
         profitHigh = rfm[rfm['Monetary'] == rfm['Monetary'].max()]
-        st.write(profitHigh[0]['Monetary'])
+        for l, dfMonetaryHigh in enumerate(profitHigh['Monetary']):
+            maxMonetary = profitHigh.loc[profitHigh.index[l], 'Monetary']
+        st.write(maxMonetary)
 
     st.markdown("---")
 
