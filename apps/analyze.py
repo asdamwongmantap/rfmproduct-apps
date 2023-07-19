@@ -365,7 +365,7 @@ def infoByChart(data,rfm):
         profitHigh = rfm[rfm['Monetary'] == rfm['Monetary'].max()]
         for l, dfMonetaryHigh in enumerate(profitHigh['Monetary']):
             maxMonetary = profitHigh.loc[profitHigh.index[l], 'Monetary']
-        st.write(maxMonetary)
+        st.write(f" Rp. {maxMonetary}")
 
     st.markdown("---")
 
