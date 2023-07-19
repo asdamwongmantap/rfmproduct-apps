@@ -18,8 +18,6 @@ def app(rfm):
     'Silahkan Pilih Metode Klaster !',
     ('-', 'K-Medoids', 'K-Means'))
 
-    st.write(rfm)
-    
     if option == 'K-Medoids':
         productcluster(option,rfm)
     elif option == 'K-Means':

@@ -239,7 +239,7 @@ if authentication_status:
     if selected == 'Dashboard':
         dashboard.app()
     elif selected == 'Analisa Produk':
-        analyze.app()
+        analyze.app(data,rfm)
     elif selected == 'Klaster Produk':
         # rfm = analyze.app()
         cluster.app(rfm)
