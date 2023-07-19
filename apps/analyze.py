@@ -18,18 +18,15 @@ def app():
     if uploaded_file is not None:
         # ubah file csv menjadi dataframe
         # df = pd.read_csv(uploaded_file)
-        df = loadCsv(uploaded_file)
+        data = loadCsv(uploaded_file)
 
         # tampilkan 3 baris pertama
         # st.write(df)
 
 
-        data = deleteUnusedColumn(df)
-        data = renameColumn(data)
-        # data = masking(data)
-        # totalOrder = getTotalOrder(data)
-        # data = getMinSupport(data,totalOrder)
-        # data = rfm1Item(data)
+        # data = deleteUnusedColumn(df)
+        # data = renameColumn(data)
+
         rfm = rfmAll(data,dateAnalyze)
         gd = GridOptionsBuilder.from_dataframe(rfm)
         gd.configure_pagination(enabled=True,paginationPageSize=10)
@@ -349,5 +346,8 @@ def rfmAll(data,snapShotDate):
 @st.cache_data
 def loadCsv(url):
     df = pd.read_csv(url)
-    return df
+    data = deleteUnusedColumn(df)
+    data = renameColumn(data)
+    return data
+
     
