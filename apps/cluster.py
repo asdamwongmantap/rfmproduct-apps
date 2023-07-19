@@ -12,16 +12,21 @@ from apps import analyze
 from sklearn.metrics import davies_bouldin_score
 
 def app(rfm):
-    st.write("Sebelum memilih metode klaster, pastikan anda telah mengupload file csv yang didapat dari datawarehouse !")
+    uploaded_file = st.file_uploader("Choose a file")
+    if uploaded_file is not None:
+        # ubah file csv menjadi dataframe
+        data,rfm = loadCsv(uploaded_file,dateAnalyze)
+        st.write("Sebelum memilih metode klaster, pastikan anda telah mengupload file csv yang didapat dari datawarehouse !")
 
-    option = st.selectbox(
-    'Silahkan Pilih Metode Klaster !',
-    ('-', 'K-Medoids', 'K-Means'))
+        option = st.selectbox(
+        'Silahkan Pilih Metode Klaster !',
+        ('-', 'K-Medoids', 'K-Means'))
 
-    if option == 'K-Medoids':
-        productcluster(option,rfm)
-    elif option == 'K-Means':
-        productcluster(option,rfm)
+        if option == 'K-Medoids':
+            productcluster(option,rfm)
+        elif option == 'K-Means':
+            productcluster(option,rfm)
+        return rfm
     
 
 def productcluster(cluster,rfm):

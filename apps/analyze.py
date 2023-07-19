@@ -378,6 +378,7 @@ def infoByChart(rfm,totalOrder,totalProduk):
 
     left_colchart, mid_colchart, right_colchart = st.columns(3)
     with left_colchart:
+        st.set_option('deprecation.showPyplotGlobalUse', False)
         st.write("Produk Berdasarkan Rentang Waktu (Recency):")
         # group data for chart
         monthYearSortDF = rfm.value_counts('MonthYearSort').reset_index(name='countsMonthYearSort').sort_values(by='MonthYearSort')
@@ -397,6 +398,7 @@ def infoByChart(rfm,totalOrder,totalProduk):
         st.pyplot(savefig)
 
     with mid_colchart:
+        st.set_option('deprecation.showPyplotGlobalUse', False)
         st.write("Produk Berdasarkan Pembelian (Frequency):")
         # group data for chart
         for k, dfFrequency in enumerate(rfm['Frequency']):
@@ -416,6 +418,7 @@ def infoByChart(rfm,totalOrder,totalProduk):
         st.pyplot(savefig)
 
     with right_colchart:
+        st.set_option('deprecation.showPyplotGlobalUse', False)
         st.write("Produk Berdasarkan Keuntungan (Monetary):")
         # group data for chart
         for k, dfMonetary in enumerate(rfm['Monetary']):
