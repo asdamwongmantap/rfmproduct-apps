@@ -354,20 +354,20 @@ def infoByChart(data,rfm):
 
     left_col, mid_col, right_col = st.columns(3)
     with left_col:
-        st.title("Total Order:")
+        st.write("Total Order:")
         st.write(f"{loadTotalOrder(data)}")
     with mid_col:
-        st.title("Total Produk:")
+        st.write("Total Produk:")
         st.write(f"{len(rfm)}")
     with right_col:
-        st.title("Profit Produk Tertinggi:")
-        st.title(f"{rfm[rfm['Monetary'] == rfm['Monetary'].max()]['Monetary']}")
+        st.write("Profit Produk Tertinggi:")
+        st.write(rfm[rfm['Monetary'] == rfm['Monetary'].max()]['Monetary'])
 
     st.markdown("---")
 
     left_colchart, mid_colchart, right_colchart = st.columns(3)
     with left_colchart:
-        st.title("Produk Berdasarkan Rentang Waktu (Recency):")
+        st.write("Produk Berdasarkan Rentang Waktu (Recency):")
         # group data for chart
         monthYearSortDF = rfm.value_counts('MonthYearSort').reset_index(name='countsMonthYearSort').sort_values(by='MonthYearSort')
         monthYearSortDF['MonthSplit'] = 0
@@ -386,7 +386,7 @@ def infoByChart(data,rfm):
         st.pyplot(savefig)
 
     with mid_colchart:
-        st.title("Produk Berdasarkan Jumlah pembelian (Frequency):")
+        st.write("Produk Berdasarkan Jumlah pembelian (Frequency):")
         # group data for chart
         for k, dfFrequency in enumerate(rfm['Frequency']):
             if rfm.loc[rfm.index[k], 'Frequency'] <= 6:
@@ -405,7 +405,7 @@ def infoByChart(data,rfm):
         st.pyplot(savefig)
 
     with right_colchart:
-        st.title("Produk Berdasarkan Keuntungan / Profit (Monetary):")
+        st.write("Produk Berdasarkan Keuntungan / Profit (Monetary):")
         # group data for chart
         for k, dfMonetary in enumerate(rfm['Monetary']):
             if rfm.loc[rfm.index[k], 'Monetary'] <= 500000:
