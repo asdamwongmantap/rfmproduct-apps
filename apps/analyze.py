@@ -13,29 +13,29 @@ import calendar
 import matplotlib.pyplot as plt
 
 
-def app():
-    dateAnalyze = st.date_input("Tanggal Analisa", datetime.date(2023, 7, 3))
+def app(data,rfm):
+    # dateAnalyze = st.date_input("Tanggal Analisa", datetime.date(2023, 7, 3))
     st.write("Untuk Melakukan Analisa Produk, Pengguna perlu melakukan input tanggal analisa dan upload data csv yang didapat dari datawarehouse terlebih dahulu")
-    uploaded_file = st.file_uploader("Choose a file")
-    if uploaded_file is not None:
-        # ubah file csv menjadi dataframe
-        data,rfm = loadCsv(uploaded_file,dateAnalyze)
+    # uploaded_file = st.file_uploader("Choose a file")
+    # if uploaded_file is not None:
+    # ubah file csv menjadi dataframe
+    # data,rfm = loadCsv(uploaded_file,dateAnalyze)
 
-        # tampilkan 3 baris pertama
-        # rfm = rfmAll(data,dateAnalyze)
-        totalOrder = loadTotalOrder(data)
-        totalProduk = len(rfm)
-        option = st.selectbox(
-            'Silahkan pilih tampilan informasi yang ingin ditampilkan!',
-            ('-', 'Text', 'Visual'))
+    # tampilkan 3 baris pertama
+    # rfm = rfmAll(data,dateAnalyze)
+    totalOrder = loadTotalOrder(data)
+    totalProduk = len(rfm)
+    option = st.selectbox(
+        'Silahkan pilih tampilan informasi yang ingin ditampilkan!',
+        ('-', 'Text', 'Visual'))
 
-        if option == 'Text':
-            infoByText(rfm,totalOrder,totalProduk)
-        elif option == 'Visual':
-            infoByChart(rfm,totalOrder,totalProduk)
+    if option == 'Text':
+        infoByText(rfm,totalOrder,totalProduk)
+    elif option == 'Visual':
+        infoByChart(rfm,totalOrder,totalProduk)
 
-        
-        return rfm
+    
+    return rfm
 
 def deleteUnusedColumn(df):
     dfDropCol = df.drop(['Fulfillment Item ID',
@@ -313,14 +313,14 @@ def rfmAll(data,snapShotDate):
     # rfm.reset_index(inplace=True)
     return rfm
 
-@st.cache_data
-def loadCsv(url,dateAnalyze):
-    df = pd.read_csv(url)
-    data = deleteUnusedColumn(df)
-    data = renameColumn(data)
+# @st.cache_data
+# def loadCsv(url,dateAnalyze):
+#     df = pd.read_csv(url)
+#     data = deleteUnusedColumn(df)
+#     data = renameColumn(data)
 
-    rfm = rfmAll(data,dateAnalyze)
-    return data,rfm
+#     rfm = rfmAll(data,dateAnalyze)
+#     return data,rfm
 
 @st.cache_data
 def loadTotalOrder(data):
@@ -378,6 +378,7 @@ def infoByChart(rfm,totalOrder,totalProduk):
 
     left_colchart, mid_colchart, right_colchart = st.columns(3)
     with left_colchart:
+        st.set_option('deprecation.showPyplotGlobalUse', False)
         st.write("Produk Berdasarkan Rentang Waktu (Recency):")
         # group data for chart
         monthYearSortDF = rfm.value_counts('MonthYearSort').reset_index(name='countsMonthYearSort').sort_values(by='MonthYearSort')
@@ -397,6 +398,7 @@ def infoByChart(rfm,totalOrder,totalProduk):
         st.pyplot(savefig)
 
     with mid_colchart:
+        st.set_option('deprecation.showPyplotGlobalUse', False)
         st.write("Produk Berdasarkan Pembelian (Frequency):")
         # group data for chart
         for k, dfFrequency in enumerate(rfm['Frequency']):
@@ -416,6 +418,7 @@ def infoByChart(rfm,totalOrder,totalProduk):
         st.pyplot(savefig)
 
     with right_colchart:
+        st.set_option('deprecation.showPyplotGlobalUse', False)
         st.write("Produk Berdasarkan Keuntungan (Monetary):")
         # group data for chart
         for k, dfMonetary in enumerate(rfm['Monetary']):

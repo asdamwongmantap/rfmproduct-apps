@@ -57,8 +57,6 @@ def productcluster(cluster,rfm):
             if int(numOfCluster) <= 0:
                 st.write("Jumlah klaster harus lebih dari 0")
 
-        st.write(clusterbydbikmeans(x_scaledkmeans)['Klaster'])
-
         if int(numOfCluster) != 0:
             kmeans_scaled = KMeans(int(numOfCluster))
             kmeans_scaled.fit(x_scaledkmeans)
@@ -154,8 +152,6 @@ def clusterbydbikmeans(x_scaledkmeans):
 
     dbikmeans['Klaster'] = dbikmeansklaster
     dbikmeans['DBI'] = dbikmeansdbi
-
-    st.write(dbikmeans)
 
     return dbikmeans[dbikmeans['DBI'] == dbikmeans['DBI'].min()]
         
