@@ -11,7 +11,6 @@ from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 import datetime
 
 
-@st.cache_data
 def app():
     dateAnalyze = st.date_input("Tanggal Analisa", datetime.date(2023, 7, 3))
     st.write("Untuk Melakukan Analisa Produk, Pengguna Perlu melakukan upload data csv yang didapat dari datawarehouse terlebih dahulu")
@@ -310,6 +309,7 @@ def rfm2Item(data):
     dfFi2 = data.loc[(data['CountItem'] == 2) & (data['MinSupportFloat'] >= 0.00001)]
     return dfFi2
 
+@st.cache_data
 def rfmAll(data,snapShotDate):
     data['Order Date'].fillna('-')
     data['dateSplit'] = ""
